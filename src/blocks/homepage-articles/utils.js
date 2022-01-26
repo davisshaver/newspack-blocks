@@ -34,6 +34,7 @@ const POST_QUERY_ATTRIBUTES = [
 	'specificPosts',
 	'specificMode',
 	'tagExclusions',
+	'categoryExclusions',
 	'postType',
 ];
 
@@ -45,7 +46,7 @@ const POST_QUERY_ATTRIBUTES = [
  *    block might be nested somewhere.
  *
  * @param {Object} prevProps Edit component props
- * @param {Object} props Edit component props
+ * @param {Object} props     Edit component props
  */
 export const shouldReflow = ( prevProps, props ) =>
 	! isEqual(
@@ -71,6 +72,7 @@ export const queryCriteriaFromAttributes = attributes => {
 		specificPosts = [],
 		specificMode,
 		tagExclusions,
+		categoryExclusions,
 	} = pick( attributes, POST_QUERY_ATTRIBUTES );
 
 	const cleanPosts = sanitizePostList( specificPosts );
@@ -88,6 +90,7 @@ export const queryCriteriaFromAttributes = attributes => {
 					author: authors,
 					tags,
 					tags_exclude: tagExclusions,
+					categories_exclude: categoryExclusions,
 					post_type: postType,
 			  },
 		value => ! isUndefined( value )

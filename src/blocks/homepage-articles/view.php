@@ -58,6 +58,9 @@ function newspack_blocks_render_block_homepage_articles( $attributes ) {
 	if ( isset( $attributes['className'] ) ) {
 		$classes .= ' ' . $attributes['className'];
 	}
+	if ( $attributes['textAlign'] ) {
+		$classes .= ' has-text-align-' . $attributes['textAlign'];
+	}
 
 	if ( '' !== $attributes['textColor'] || '' !== $attributes['customTextColor'] ) {
 		$classes .= ' has-text-color';
@@ -221,7 +224,7 @@ function newspack_blocks_format_byline( $author_info ) {
 	$index    = -1;
 	$elements = array_merge(
 		[
-			esc_html_x( 'by', 'post author', 'newspack-blocks' ) . ' ',
+			'<span class="author-prefix">' . esc_html_x( 'by', 'post author', 'newspack-blocks' ) . '</span> ',
 		],
 		array_reduce(
 			$author_info,

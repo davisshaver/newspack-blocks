@@ -1,10 +1,20 @@
-@import './shared';
+@import './view';
 
 .editor-styles-wrapper {
 	.wp-block-newspack-blocks-author-profile {
 		.components-notice {
 			margin: 0 0 2rem 0;
 			width: 100%;
+		}
+
+		.is-loading {
+			align-items: center;
+			display: flex;
+
+			.components-spinner {
+				margin-right: 0;
+				margin-top: 0;
+			}
 		}
 
 		a.no-op {

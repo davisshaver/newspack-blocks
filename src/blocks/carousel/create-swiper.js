@@ -4,16 +4,18 @@
 import { speak } from '@wordpress/a11y';
 import { escapeHTML } from '@wordpress/escape-html';
 import { __, sprintf } from '@wordpress/i18n';
-import Swiper from 'swiper';
-import 'swiper/dist/css/swiper.css';
+// eslint-disable-next-line import/no-unresolved
+import Swiper from 'swiper/bundle';
+// eslint-disable-next-line import/no-unresolved
+import 'swiper/css/bundle';
 
 const autoplayClassName = 'wp-block-newspack-blocks-carousel__autoplay-playing';
 
 /**
  * A helper for IE11-compatible iteration over NodeList elements.
  *
- * @param {Object} nodeList List of nodes to be iterated over.
- * @param {Function} cb Invoked for each iteratee.
+ * @param {Object}   nodeList List of nodes to be iterated over.
+ * @param {Function} cb       Invoked for each iteratee.
  */
 function forEachNode( nodeList, cb ) {
 	/**
@@ -52,15 +54,15 @@ function deactivateSlide( slide ) {
  * Creates a Swiper instance with predefined config used by the Articles
  * Carousel block in both front-end and editor.
  *
- * @param {Object} els Swiper elements
- * @param {Element} els.block Block element
- * @param {Element} els.container Swiper container element
- * @param {Element} els.next Next button element
- * @param {Element} els.prev Previous button element
- * @param {Element} els.play Play button element
- * @param {Element} els.pause Pause button element
+ * @param {Object}  els            Swiper elements
+ * @param {Element} els.block      Block element
+ * @param {Element} els.container  Swiper container element
+ * @param {Element} els.next       Next button element
+ * @param {Element} els.prev       Previous button element
+ * @param {Element} els.play       Play button element
+ * @param {Element} els.pause      Pause button element
  * @param {Element} els.pagination Pagination element
- * @param {Object} config Swiper config
+ * @param {Object}  config         Swiper config
  * @return {Object} Swiper instance
  */
 export default function createSwiper( els, config = {} ) {
@@ -98,11 +100,13 @@ export default function createSwiper( els, config = {} ) {
 			renderBullet: ( index, className ) => {
 				// Use a custom render, as Swiper's render is inaccessible.
 				return `<button class="${ className }"><span>${ sprintf(
+					/* translators: Indicates which slide the slider is on. */
 					__( 'Slide %s', 'newspack-blocks' ),
 					index + 1
 				) }</span></button>`;
 			},
 		},
+		watchSlidesProgress: config.slidesPerView > 1,
 		preventClicksPropagation: false, // Necessary for normal block interactions.
 		releaseFormElements: false,
 		setWrapperSize: true,
@@ -110,8 +114,14 @@ export default function createSwiper( els, config = {} ) {
 		spaceBetween: 16,
 		touchStartPreventDefault: false,
 		breakpoints: {
-			600: {
+			320: {
+				slidesPerView: 1,
+			},
+			782: {
 				slidesPerView: config.slidesPerView > 1 ? 2 : 1,
+			},
+			1168: {
+				slidesPerView: config.slidesPerView,
 			},
 		},
 		on: {
@@ -134,22 +144,29 @@ export default function createSwiper( els, config = {} ) {
 				 * If we're autoplaying, don't announce the slide change, as that would
 				 * be supremely annoying.
 				 */
-				if ( ! this.autoplay.running ) {
+				if ( ! this.autoplay?.running ) {
 					// Announce the contents of the slide.
 					const currentImage = currentSlide.querySelector( 'img' );
 					const alt = currentImage ? currentImage?.alt : false;
 
 					const slideInfo = sprintf(
-						/* translators: current slide number and the total number of slides */
-						__( 'Slide %s of %s', 'newspack-blocks' ),
+						/* translators: 1: current slide number and 2: total number of slides */
+						__( 'Slide %1$s of %2$s', 'newspack-blocks' ),
 						this.realIndex + 1,
-						this.pagination.bullets.length
+						this.pagination?.bullets?.length || 0
 					);
 
 					speak(
 						escapeHTML(
 							`${ currentSlide.innerText },
-							${ alt ? sprintf( __( 'Image: %s, ', 'newspack-blocks' ), alt ) : '' }
+							${
+								alt
+									? /* translators: the title of the image. */ sprintf(
+											__( 'Image: %s, ', 'newspack-blocks' ),
+											alt
+									  )
+									: ''
+							}
 							${ slideInfo }`
 						),
 						'assertive'
@@ -191,22 +208,22 @@ export default function createSwiper( els, config = {} ) {
 			els.pause.focus(); // Move focus to the pause button.
 		}
 
-		swiper.on( 'init', function() {
+		swiper.on( 'init', function () {
 			els.play.addEventListener( 'click', handlePlayButtonClick );
 			els.pause.addEventListener( 'click', handlePauseButtonClick );
 		} );
 
-		swiper.on( 'autoplayStart', function() {
+		swiper.on( 'autoplayStart', function () {
 			els.block.classList.add( autoplayClassName ); // Hide play & show pause button.
 			speak( __( 'Playing', 'newspack-blocks' ), 'assertive' );
 		} );
 
-		swiper.on( 'autoplayStop', function() {
+		swiper.on( 'autoplayStop', function () {
 			els.block.classList.remove( autoplayClassName ); // Hide pause & show play button.
 			speak( __( 'Paused', 'newspack-blocks' ), 'assertive' );
 		} );
 
-		swiper.on( 'beforeDestroy', function() {
+		swiper.on( 'beforeDestroy', function () {
 			els.play.removeEventListener( 'click', handlePlayButtonClick );
 			els.pause.removeEventListener( 'click', handlePauseButtonClick );
 		} );

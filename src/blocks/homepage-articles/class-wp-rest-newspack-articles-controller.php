@@ -57,62 +57,69 @@ class WP_REST_Newspack_Articles_Controller extends WP_REST_Controller {
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => [ 'Newspack_Blocks_API', 'posts_endpoint' ],
 				'args'                => [
-					'author'         => [
+					'author'             => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'categories'     => [
+					'categories'         => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'excerpt_length' => [
+					'categories_exclude' => [
+						'type'    => 'array',
+						'items'   => array(
+							'type' => 'integer',
+						),
+						'default' => array(),
+					],
+					'excerpt_length'     => [
 						'type'    => 'integer',
 						'default' => 55,
 					],
-					'exclude'        => [
+					'exclude'            => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'include'        => [
+					'include'            => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'orderby'        => [
+					'orderby'            => [
 						'sanitize_callback' => 'sanitize_text_field',
 					],
-					'per_page'       => [
+					'per_page'           => [
 						'sanitize_callback' => 'absint',
 					],
-					'show_excerpt'   => [
+					'show_excerpt'       => [
 						'type' => 'boolean',
 					],
-					'tags'           => [
+					'tags'               => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'tags_exclude'   => [
+					'tags_exclude'       => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'integer',
 						),
 						'default' => array(),
 					],
-					'post_type'      => [
+					'post_type'          => [
 						'type'    => 'array',
 						'items'   => array(
 							'type' => 'string',
@@ -195,8 +202,7 @@ class WP_REST_Newspack_Articles_Controller extends WP_REST_Controller {
 		$ids      = [];
 		$next_url = '';
 
-		Newspack_Blocks::filter_excerpt_length( $attributes );
-		Newspack_Blocks::filter_excerpt_more( $attributes );
+		Newspack_Blocks::filter_excerpt( $attributes );
 
 		// The Loop.
 		while ( $article_query->have_posts() ) {
@@ -215,8 +221,7 @@ class WP_REST_Newspack_Articles_Controller extends WP_REST_Controller {
 			$ids[]           = get_the_ID();
 		}
 
-		Newspack_Blocks::remove_excerpt_length_filter();
-		Newspack_Blocks::remove_excerpt_more_filter();
+		Newspack_Blocks::remove_excerpt_filter();
 
 		// Provide next URL if there are more pages.
 		$show_next_button = ! empty( $exclude_ids ) ? $article_query->max_num_pages > 1 : $article_query->max_num_pages > $next_page;

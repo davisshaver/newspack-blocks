@@ -35,10 +35,17 @@ call_user_func(
 		if ( has_post_thumbnail() && 'uncropped' !== $attributes['imageShape'] ) {
 			$image_size = Newspack_Blocks::image_size_for_orientation( $attributes['imageShape'] );
 		}
-		$thumbnail_args = '';
+		$thumbnail_args = array(
+			'data-hero-candidate' => true,
+		);
 		// If the image position is behind, pass the object-fit setting to maintain styles with AMP.
 		if ( 'behind' === $attributes['mediaPosition'] ) {
-			$thumbnail_args = array( 'object-fit' => 'cover' );
+			$thumbnail_args['object-fit'] = 'cover';
+		}
+		// Disable lazy loading by using an arbitraty `loading` attribute other than `lazy`.
+		// Empty string or `false` would still result in `lazy`.
+		if ( $attributes['disableImageLazyLoad'] ) {
+			$thumbnail_args['loading'] = 'none';
 		}
 		$category = false;
 		// Use Yoast primary category if set.
@@ -93,10 +100,15 @@ call_user_func(
 					</span>
 				</span>
 			<?php elseif ( $attributes['showCategory'] && $category ) : ?>
+				<?php $category_link = get_category_link( $category->term_id ); ?>
 				<div class="cat-links">
-					<a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
+					<?php if ( ! empty( $category_link ) ) : ?>
+						<a href="<?php echo esc_url( $category_link ); ?>">
+					<?php endif; ?>
 						<?php echo esc_html( $category->name ); ?>
-					</a>
+					<?php if ( ! empty( $category_link ) ) : ?>
+						</a>
+					<?php endif; ?>
 				</div>
 				<?php
 			endif;
@@ -119,9 +131,30 @@ call_user_func(
 			?>
 			<?php
 			if ( $attributes['showSubtitle'] ) :
+				$subtitle = get_post_meta( $post_id, 'newspack_post_subtitle', true );
+
 				?>
 				<div class="newspack-post-subtitle newspack-post-subtitle--in-homepage-block">
-					<?php echo esc_html( get_post_meta( $post_id, 'newspack_post_subtitle', true ) ); ?>
+					<?php
+					$allowed_tags = array(
+						'b'      => true,
+						'strong' => true,
+						'i'      => true,
+						'em'     => true,
+						'mark'   => true,
+						'u'      => true,
+						'small'  => true,
+						'sub'    => true,
+						'sup'    => true,
+						'a'      => array(
+							'href'   => true,
+							'target' => true,
+							'rel'    => true,
+						),
+					);
+
+					echo wptexturize( wp_kses( $subtitle, $allowed_tags ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					?>
 				</div>
 			<?php endif; ?>
 			<?php
@@ -153,7 +186,7 @@ call_user_func(
 								if ( '' !== $logo['url'] ) {
 									echo '<a href="' . esc_url( $logo['url'] ) . '" target="_blank">';
 								}
-								echo '<img src="' . esc_url( $logo['src'] ) . '" width="' . esc_attr( $logo['width'] ) . '" height="' . esc_attr( $logo['height'] ) . '">';
+								echo '<img src="' . esc_url( $logo['src'] ) . '" alt="' . esc_attr( $logo['alt'] ) . '" width="' . esc_attr( $logo['width'] ) . '" height="' . esc_attr( $logo['height'] ) . '">';
 								if ( '' !== $logo['url'] ) {
 									echo '</a>';
 								}

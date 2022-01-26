@@ -53,9 +53,8 @@ class Edit extends Component {
 	 * The overlay handling is the same as the core embed blocks.
 	 *
 	 * @see https://github.com/WordPress/gutenberg/blob/8e7f7b1a388829ac46fb6917351c7d064905af9a/packages/block-library/src/embed/embed-preview.js#L27-L111
-	 *
 	 * @param {Object} nextProps Next object props.
-	 * @param {Object} state Object state.
+	 * @param {Object} state     Object state.
 	 * @return {Object} State or null.
 	 */
 	static getDerivedStateFromProps( nextProps, state ) {
@@ -147,7 +146,7 @@ class Edit extends Component {
 				orderby: 'count',
 				order: 'desc',
 			} ),
-		} ).then( function( categories ) {
+		} ).then( function ( categories ) {
 			return categories.map( category => ( {
 				value: category.id,
 				label: decodeEntities( category.name ) || __( '(no title)', 'newspack-blocks' ),
@@ -168,7 +167,7 @@ class Edit extends Component {
 				_fields: 'id,name',
 				include: categoryIDs.join( ',' ),
 			} ),
-		} ).then( function( categories ) {
+		} ).then( function ( categories ) {
 			return categories.map( category => ( {
 				value: category.id,
 				label: decodeEntities( category.name ) || __( '(no title)', 'newspack-blocks' ),

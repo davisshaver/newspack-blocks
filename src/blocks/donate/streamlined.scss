@@ -6,14 +6,23 @@
 	.stripe-payment {
 		&__card {
 			border: 1px solid $color__border;
-			margin-bottom: 0.76rem;
+			border-radius: 3px;
 			padding: 0.34rem 0.66rem;
 		}
-		input,
+		input[type='text'],
+		input[type='email'],
+		&__checkbox,
+		button {
+			font-size: 0.7em;
+		}
+		input[type='text'],
+		input[type='email'],
 		&__messages {
 			width: 100%;
 		}
-		input {
+		input[type='text'],
+		input[type='email'] {
+			border-radius: 3px;
 			font-family: sans-serif;
 
 			@include media( tablet ) {
@@ -21,6 +30,24 @@
 				line-height: 1.2;
 			}
 		}
+
+		&__inputs {
+			&--hidden {
+				display: none;
+			}
+		}
+
+		&__checkbox {
+			align-items: center;
+			display: flex;
+
+			input {
+				height: 1em;
+				width: 1em;
+				margin-right: 0.5em;
+			}
+		}
+
 		&__messages {
 			> div {
 				border: 0 solid $color__info;
@@ -51,6 +78,56 @@
 				opacity: 0.4;
 			}
 		}
+
+		&__row {
+			margin-bottom: 0.5rem;
+			&--small {
+				line-height: 1;
+				margin-bottom: 0;
+			}
+			&--flex {
+				display: flex;
+				align-items: flex-end;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				@include media( tablet ) {
+					flex-wrap: nowrap;
+				}
+				input {
+					margin-bottom: 0.5rem;
+					@include media( tablet ) {
+						margin-bottom: 0;
+						width: 50%;
+						&:last-child {
+							margin-left: 0.5rem;
+						}
+					}
+				}
+			}
+		}
+
+		&__info {
+			color: $color__text-light;
+			font-size: 0.7em;
+			font-style: italic;
+			padding-left: 1.5em;
+		}
+
+		&__footer {
+			margin-top: 1.5rem;
+			margin-bottom: 1.5rem;
+		}
+		button[type='submit'] {
+			margin: 0 10px 0 0 !important;
+		}
+		&__branding {
+			display: block;
+			text-decoration: none;
+
+			img {
+				display: block;
+			}
+		}
 	}
 
 	&__stripe {
@@ -66,4 +143,8 @@
 			}
 		}
 	}
+}
+
+#stripe-fees-amount {
+	padding-left: 3px;
 }

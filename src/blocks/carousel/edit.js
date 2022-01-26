@@ -11,6 +11,7 @@ import classnames from 'classnames';
  */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
+// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 import { dateI18n, __experimentalGetSettings } from '@wordpress/date';
 import { Component, createRef, Fragment } from '@wordpress/element';
 import {
@@ -173,7 +174,9 @@ class Edit extends Component {
 		const classes = classnames(
 			className,
 			'wp-block-newspack-blocks-carousel', // Default to make styles work for third-party consumers.
-			'swiper-container',
+			'wpnbpc', // Shortened version of the default classname.
+			'slides-per-view-' + slidesPerView,
+			'swiper',
 			{
 				'wp-block-newspack-blocks-carousel__autoplay-playing': autoplay,
 				'newspack-block--disabled': isUIDisabled,
@@ -263,7 +266,9 @@ class Edit extends Component {
 							<div className="swiper-wrapper">
 								{ latestPosts.map( post => (
 									<article
-										className={ `post-has-image swiper-slide ${ post.post_type }` }
+										className={ `post-has-image swiper-slide ${ post.post_type } ${
+											post.newspack_article_classes || ''
+										}` }
 										key={ post.id }
 									>
 										<figure className="post-thumbnail">
@@ -291,7 +296,7 @@ class Edit extends Component {
 													</span>
 												) }
 												{ showCategory &&
-													post.newspack_category_info.length &&
+													0 < post.newspack_category_info.length &&
 													! post.newspack_post_sponsors && (
 														<div className="cat-links">
 															<a href="#">{ decodeEntities( post.newspack_category_info ) }</a>
@@ -336,7 +341,7 @@ class Edit extends Component {
 										ref={ this.btnNextRef }
 									/>
 									<div
-										className="swiper-pagination-bullets amp-pagination"
+										className="swiper-pagination swiper-pagination-bullets amp-pagination"
 										ref={ this.paginationRef }
 									/>
 								</>

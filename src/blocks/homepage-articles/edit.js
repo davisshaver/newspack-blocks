@@ -21,6 +21,7 @@ import classNames from 'classnames';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+// eslint-disable-next-line @wordpress/no-unsafe-wp-apis
 import { dateI18n, __experimentalGetSettings } from '@wordpress/date';
 import { Component, Fragment, RawHTML } from '@wordpress/element';
 import {
@@ -29,6 +30,7 @@ import {
 	PanelColorSettings,
 	RichText,
 	withColors,
+	AlignmentControl,
 } from '@wordpress/block-editor';
 import {
 	Button,
@@ -172,11 +174,13 @@ class Edit extends Component {
 							<span className="flag">{ post.newspack_post_sponsors[ 0 ].flag }</span>
 						</span>
 					) }
-					{ showCategory && post.newspack_category_info.length && ! post.newspack_post_sponsors && (
-						<div className="cat-links">
-							<a href="#">{ decodeEntities( post.newspack_category_info ) }</a>
-						</div>
-					) }
+					{ showCategory &&
+						0 < post.newspack_category_info.length &&
+						! post.newspack_post_sponsors && (
+							<div className="cat-links">
+								<a href="#">{ decodeEntities( post.newspack_category_info ) }</a>
+							</div>
+						) }
 					{ RichText.isEmpty( sectionHeader ) ? (
 						<h2 className="entry-title" key="title">
 							{ post.newspack_post_format === 'aside' ? postTitle : <a href="#">{ postTitle }</a> }
@@ -253,6 +257,7 @@ class Edit extends Component {
 			postType,
 			showImage,
 			showCaption,
+			disableImageLazyLoad,
 			imageScale,
 			mobileStack,
 			minHeight,
@@ -272,6 +277,7 @@ class Edit extends Component {
 			specificMode,
 			tags,
 			tagExclusions,
+			categoryExclusions,
 		} = attributes;
 
 		const imageSizeOptions = [
@@ -331,6 +337,10 @@ class Edit extends Component {
 						onTagExclusionsChange={ _tagExclusions =>
 							setAttributes( { tagExclusions: _tagExclusions } )
 						}
+						categoryExclusions={ categoryExclusions }
+						onCategoryExclusionsChange={ _categoryExclusions =>
+							setAttributes( { categoryExclusions: _categoryExclusions } )
+						}
 						postType={ postType }
 					/>
 					{ postLayout === 'grid' && (
@@ -382,6 +392,20 @@ class Edit extends Component {
 								label={ __( 'Show Featured Image Caption', 'newspack-blocks' ) }
 								checked={ showCaption }
 								onChange={ () => setAttributes( { showCaption: ! showCaption } ) }
+							/>
+						</PanelRow>
+					) }
+
+					{ showImage && (
+						<PanelRow>
+							<ToggleControl
+								label={ __( 'Disable Featured Image Lazy Loading', 'newspack-blocks' ) }
+								help={ __(
+									'Improve Largest Contentful Paint (LCP) score if the block is on initial viewport.',
+									'newspack-blocks'
+								) }
+								checked={ disableImageLazyLoad }
+								onChange={ () => setAttributes( { disableImageLazyLoad: ! disableImageLazyLoad } ) }
 							/>
 						</PanelRow>
 					) }
@@ -600,6 +624,7 @@ class Edit extends Component {
 			showCaption,
 			showCategory,
 			specificMode,
+			textAlign,
 		} = attributes;
 
 		const classes = classNames( className, {
@@ -614,6 +639,7 @@ class Edit extends Component {
 			'has-text-color': textColor.color !== '',
 			'show-caption': showCaption,
 			'show-category': showCategory,
+			[ `has-text-align-${ textAlign }` ]: textAlign,
 			wpnbha: true,
 		} );
 
@@ -740,6 +766,14 @@ class Edit extends Component {
 				) }
 
 				<BlockControls>
+					<Toolbar>
+						<AlignmentControl
+							value={ textAlign }
+							onChange={ nextAlign => {
+								setAttributes( { textAlign: nextAlign } );
+							} }
+						/>
+					</Toolbar>
 					<Toolbar controls={ blockControls } />
 					{ showImage && <Toolbar controls={ blockControlsImages } /> }
 					{ showImage && <Toolbar controls={ blockControlsImageShape } /> }

@@ -34,6 +34,10 @@
       "type": "boolean",
       "default": false
     },
+    "disableImageLazyLoad": {
+      "type": "boolean",
+      "default": false
+    },
     "imageShape": {
       "type": "string",
       "default": "landscape"
@@ -98,6 +102,11 @@
       "default": [],
       "items": { "type": "integer" }
     },
+    "categoryExclusions": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "integer" }
+    },
     "specificPosts": {
       "type": "array",
       "default": [],
@@ -143,6 +152,10 @@
       "type": "array",
       "default": [ "post" ],
       "items": { "type": "string" }
-    }
+    },
+    "textAlign": {
+      "type": "string",
+	  "default": "left"
+	}
   }
 }

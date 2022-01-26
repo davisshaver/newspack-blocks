@@ -293,6 +293,9 @@ class Newspack_Blocks_API {
 		if ( $params['categories'] && count( $params['categories'] ) ) {
 			$args['category__in'] = $params['categories'];
 		}
+		if ( $params['categories_exclude'] && count( $params['categories_exclude'] ) ) {
+			$args['category__not_in'] = $params['categories_exclude'];
+		}
 		if ( $params['tags'] && count( $params['tags'] ) ) {
 			$args['tag__in'] = $params['tags'];
 		}
@@ -300,7 +303,27 @@ class Newspack_Blocks_API {
 			$args['tag__not_in'] = $params['tags_exclude'];
 		}
 		if ( $params['author'] && count( $params['author'] ) ) {
-			$args['author__in'] = $params['author'];
+			$authors_ids      = $params['author'];
+			$co_authors_names = [];
+
+			if ( class_exists( 'CoAuthors_Guest_Authors' ) ) {
+				$co_authors_guest_authors = new CoAuthors_Guest_Authors();
+
+				foreach ( $authors_ids as $index => $author_id ) {
+					$co_author = $co_authors_guest_authors->get_guest_author_by( 'id', $author_id );
+					if ( $co_author ) {
+						$co_authors_names[] = $co_author->user_nicename;
+						unset( $authors_ids[ $index ] );
+					}
+				}
+			}
+
+			if ( count( $co_authors_names ) ) {
+				// look for authors and co-authors posts.
+				Newspack_Blocks::filter_posts_clauses_when_co_authors( $authors_ids, $co_authors_names );
+			} else {
+				$args['author__in'] = $authors_ids;
+			}
 		}
 		if ( $params['include'] && count( $params['include'] ) ) {
 			$args['post__in'] = $params['include'];
@@ -319,7 +342,7 @@ class Newspack_Blocks_API {
 				'showExcerpt'   => $params['show_excerpt'],
 				'excerptLength' => $params['excerpt_length'],
 			];
-			Newspack_Blocks::filter_excerpt_length( $block_attributes );
+			Newspack_Blocks::filter_excerpt( $block_attributes );
 		}
 
 		$query        = new WP_Query();
@@ -379,7 +402,8 @@ class Newspack_Blocks_API {
 			$posts[] = array_merge( $data, $add_ons );
 		}
 
-		Newspack_Blocks::remove_excerpt_length_filter();
+		Newspack_Blocks::remove_excerpt_filter();
+		Newspack_Blocks::remove_filter_posts_clauses_when_co_authors_filter();
 
 		return new \WP_REST_Response( $posts );
 	}

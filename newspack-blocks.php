@@ -7,7 +7,7 @@
  * Author URI:      https://newspack.blog/
  * Text Domain:     newspack-blocks
  * Domain Path:     /languages
- * Version:         1.0.0-alpha.28
+ * Version:         1.45.1-alpha.2
  *
  * @package         Newspack_Blocks
  */
@@ -15,7 +15,7 @@
 define( 'NEWSPACK_BLOCKS__PLUGIN_FILE', __FILE__ );
 define( 'NEWSPACK_BLOCKS__BLOCKS_DIRECTORY', 'dist/' );
 define( 'NEWSPACK_BLOCKS__PLUGIN_DIR', plugin_dir_path( NEWSPACK_BLOCKS__PLUGIN_FILE ) );
-define( 'NEWSPACK_BLOCKS__VERSION', '1.0.0-alpha.28' );
+define( 'NEWSPACK_BLOCKS__VERSION', '1.45.1-alpha.2' );
 
 require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'includes/class-newspack-blocks.php';
 require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'includes/class-newspack-blocks-api.php';
@@ -27,8 +27,14 @@ require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/blocks/homepage-articles/class-w
 // REST Controller for Author Profile Block.
 require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/blocks/author-profile/class-wp-rest-newspack-authors-controller.php';
 
+// REST Controller for Author List Block.
+require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/blocks/author-list/class-wp-rest-newspack-author-list-controller.php';
+
 // REST Controller for Donate Block.
 require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/blocks/donate/class-wp-rest-newspack-donate-controller.php';
+
+// REST Controller for Iframe Block.
+require_once NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/blocks/iframe/class-wp-rest-newspack-iframe-controller.php';
 
 /**
  * Registers Articles block routes.
@@ -49,6 +55,15 @@ function newspack_authors_block_register_rest_routes() { // phpcs:ignore WordPre
 add_action( 'rest_api_init', 'newspack_authors_block_register_rest_routes' );
 
 /**
+ * Registers Author List block routes.
+ */
+function newspack_author_list_block_register_rest_routes() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	$author_list_controller = new WP_REST_Newspack_Author_List_Controller();
+	$author_list_controller->register_routes();
+}
+add_action( 'rest_api_init', 'newspack_author_list_block_register_rest_routes' );
+
+/**
  * Registers Donate block routes.
  */
 function newspack_donate_block_register_rest_routes() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
@@ -56,6 +71,15 @@ function newspack_donate_block_register_rest_routes() { // phpcs:ignore WordPres
 	$donate_controller->register_routes();
 }
 add_action( 'rest_api_init', 'newspack_donate_block_register_rest_routes' );
+
+/**
+ * Registers Iframe block routes.
+ */
+function newspack_iframe_block_register_rest_routes() { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	$iframe_controller = new WP_REST_Newspack_Iframe_Controller();
+	$iframe_controller->register_routes();
+}
+add_action( 'rest_api_init', 'newspack_iframe_block_register_rest_routes' );
 
 Newspack_Blocks::manage_view_scripts();
 add_action( 'enqueue_block_editor_assets', array( 'Newspack_Blocks', 'enqueue_block_editor_assets' ) );

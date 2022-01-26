@@ -13,32 +13,72 @@
  * @return string
  */
 function newspack_blocks_render_block_donate_footer( $attributes ) {
-	$is_streamlined = $attributes['isStreamlined'];
+	$is_streamlined                      = Newspack_Blocks::is_rendering_streamlined_block();
+	$is_rendering_newsletter_list_opt_in = false;
 	if ( $is_streamlined ) {
 		$payment_data = WP_REST_Newspack_Donate_Controller::get_payment_data();
+		if ( class_exists( 'Newspack_Newsletters' ) ) {
+			$is_rendering_newsletter_list_opt_in = isset( $payment_data['newsletter_list_id'] ) && ! empty( $payment_data['newsletter_list_id'] );
+		}
 	}
+	$thanks_text = $attributes['thanksText'];
 	$button_text = $attributes['buttonText'];
 	$campaign    = $attributes['campaign'] ?? false;
+	$client_id   = '';
+	if ( class_exists( 'Newspack_Popups_Segmentation' ) ) {
+		$client_id = Newspack_Popups_Segmentation::NEWSPACK_SEGMENTATION_CID_NAME;
+	}
+
+	$stripe_data               = \Newspack\Stripe_Connection::get_stripe_data();
+	$is_rendering_fee_checkbox = 0 < (float) $stripe_data['fee_multiplier'] + (float) $stripe_data['fee_static'];
 
 	ob_start();
 
 	?>
 		<p class='wp-block-newspack-blocks-donate__thanks thanks'>
-			<?php echo esc_html__( 'Your contribution is appreciated.', 'newspack-blocks' ); ?>
+			<?php echo wp_kses_post( $thanks_text ); ?>
 		</p>
 
 		<?php if ( $is_streamlined ) : ?>
 			<div class="wp-block-newspack-blocks-donate__stripe stripe-payment stripe-payment--disabled" data-stripe-pub-key="<?php echo esc_attr( $payment_data['usedPublishableKey'] ); ?>">
-				<div class="stripe-payment__card"></div>
-				<input class="stripe-payment__email" placeholder="<?php echo esc_html__( 'Email', 'newspack-blocks' ); ?>" type="email" name="email" value="">
-				<div class="stripe-payment__messages">
-					<div class="type-error"></div>
-					<div class="type-success"></div>
-					<div class="type-info"></div>
+				<div class="stripe-payment__inputs stripe-payment__inputs--hidden">
+					<div class="stripe-payment__row">
+						<div class="stripe-payment__card"></div>
+					</div>
+					<div class="stripe-payment__row stripe-payment__row--flex">
+						<input required placeholder="<?php echo esc_html__( 'Email', 'newspack-blocks' ); ?>" type="email" name="email" value="">
+						<input required placeholder="<?php echo esc_html__( 'Full Name', 'newspack-blocks' ); ?>" type="text" name="full_name" value="">
+					</div>
+					<?php if ( $is_rendering_newsletter_list_opt_in ) : ?>
+						<div class="stripe-payment__row stripe-payment__row--small">
+							<label class="stripe-payment__checkbox">
+								<input type="checkbox" name="newsletter_opt_in" checked value="true"><?php echo esc_html__( 'Sign up for our newsletter', 'newspack-blocks' ); ?>
+							</label>
+						</div>
+					<?php endif; ?>
+					<?php if ( $is_rendering_fee_checkbox ) : ?>
+						<div class="stripe-payment__row stripe-payment__row--small">
+							<label class="stripe-payment__checkbox">
+								<input type="checkbox" name="agree_to_pay_fees" checked value="true"><?php echo esc_html__( 'Agree to pay fees?', 'newspack-blocks' ); ?>
+								<span id="stripe-fees-amount">($0)</span>
+							</label>
+							<div class="stripe-payment__info"><?php echo esc_html__( 'Paying the transaction fee is not required, but it directs more money in support of our mission.', 'newspack-blocks' ); ?></div>
+						</div>
+					<?php endif; ?>
+					<div class="stripe-payment__messages">
+						<div class="type-error"></div>
+						<div class="type-success"></div>
+						<div class="type-info"></div>
+					</div>
 				</div>
-				<button type='submit' style="margin-left: 0; margin-top: 1em;">
-					<?php echo wp_kses_post( $button_text ); ?>
-				</button>
+				<div class="stripe-payment__row stripe-payment__row--flex stripe-payment__footer">
+					<button type='submit' style="margin-left: 0; margin-top: 1em;">
+						<?php echo wp_kses_post( $button_text ); ?>
+					</button>
+					<a target="_blank" rel="noreferrer" class="stripe-payment__branding" href="https://stripe.com">
+						<img width="111" height="26" src="<?php echo esc_attr( Newspack_Blocks::streamlined_block_stripe_badge() ); ?>" alt="Stripe">
+					</a>
+				</div>
 			</div>
 		<?php else : ?>
 			<button type='submit'>
@@ -48,6 +88,12 @@ function newspack_blocks_render_block_donate_footer( $attributes ) {
 		<?php if ( $campaign ) : ?>
 			<input type='hidden' name='campaign' value='<?php echo esc_attr( $campaign ); ?>' />
 		<?php endif; ?>
+		<input
+			name="cid"
+			type="hidden"
+			value="CLIENT_ID(<?php echo esc_attr( $client_id ); ?>)"
+			data-amp-replace="CLIENT_ID"
+		/>
 	<?php
 
 	return ob_get_clean();
@@ -57,7 +103,7 @@ function newspack_blocks_render_block_donate_footer( $attributes ) {
  * Enqueue frontend scripts and styles for the streamlined version of the donate block.
  */
 function newspack_blocks_enqueue_streamlined_donate_block_scripts() {
-	if ( Newspack_Blocks::can_use_streamlined_donate_block() ) {
+	if ( Newspack_Blocks::is_rendering_streamlined_block() ) {
 		$script_data = Newspack_Blocks::script_enqueue_helper( NEWSPACK_BLOCKS__BLOCKS_DIRECTORY . '/donateStreamlined.js' );
 		wp_enqueue_script(
 			Newspack_Blocks::DONATE_STREAMLINED_SCRIPT_HANDLE,
@@ -88,9 +134,7 @@ function newspack_blocks_render_block_donate( $attributes ) {
 		return '';
 	}
 
-	// Overwrite the attribute value.
-	$attributes['isStreamlined'] = ( $attributes['isStreamlined'] ?? false ) && Newspack_Blocks::can_use_streamlined_donate_block();
-	if ( $attributes['isStreamlined'] ) {
+	if ( Newspack_Blocks::is_rendering_streamlined_block() ) {
 		newspack_blocks_enqueue_streamlined_donate_block_scripts();
 	}
 
@@ -119,6 +163,18 @@ function newspack_blocks_render_block_donate( $attributes ) {
 
 	$form_footer = newspack_blocks_render_block_donate_footer( $attributes );
 
+	if ( Newspack_Blocks::is_rendering_streamlined_block() ) {
+		$stripe_data           = \Newspack\Stripe_Connection::get_stripe_data();
+		$settings_for_frontend = [
+			$settings['currencySymbol'],
+			$frequencies,
+			$stripe_data['fee_multiplier'],
+			$stripe_data['fee_static'],
+		];
+	} else {
+		$settings_for_frontend = [];
+	}
+
 	ob_start();
 
 	/**
@@ -130,7 +186,7 @@ function newspack_blocks_render_block_donate( $attributes ) {
 
 		?>
 		<div class='wp-block-newspack-blocks-donate wpbnbd untiered'>
-			<form>
+			<form data-settings="<?php echo esc_html( htmlspecialchars( wp_json_encode( $settings_for_frontend ), ENT_QUOTES, 'UTF-8' ) ); ?>">
 				<input type='hidden' name='newspack_donate' value='1' />
 				<div class='wp-block-newspack-blocks-donate__options'>
 					<?php foreach ( $frequencies as $frequency_slug => $frequency_name ) : ?>
@@ -183,7 +239,7 @@ function newspack_blocks_render_block_donate( $attributes ) {
 
 		?>
 		<div class='wp-block-newspack-blocks-donate wpbnbd tiered'>
-			<form>
+			<form data-settings="<?php echo esc_html( htmlspecialchars( wp_json_encode( $settings_for_frontend ), ENT_QUOTES, 'UTF-8' ) ); ?>">
 				<input type='hidden' name='newspack_donate' value='1' />
 				<div class='wp-block-newspack-blocks-donate__options'>
 					<div class='wp-block-newspack-blocks-donate__frequencies frequencies'>
@@ -305,6 +361,10 @@ function newspack_blocks_register_donate() {
 				],
 				'campaign'                => [
 					'type' => 'string',
+				],
+				'thanksText'              => [
+					'type'    => 'string',
+					'default' => __( 'Your contribution is appreciated.', 'newspack-blocks' ),
 				],
 				'buttonText'              => [
 					'type'    => 'string',

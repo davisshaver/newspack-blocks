@@ -38,10 +38,6 @@ export const settings = {
 		manual: {
 			type: 'boolean',
 		},
-		isStreamlined: {
-			type: 'boolean',
-			default: false,
-		},
 		suggestedAmounts: {
 			type: 'array',
 			default: [ 0, 0, 0 ],
@@ -56,6 +52,10 @@ export const settings = {
 		},
 		campaign: {
 			type: 'string',
+		},
+		thanksText: {
+			type: 'string',
+			default: __( 'Your contribution is appreciated.', 'newspack-blocks' ),
 		},
 		buttonText: {
 			type: 'string',

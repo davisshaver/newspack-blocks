@@ -6,7 +6,7 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import {
@@ -38,9 +38,7 @@ class Edit extends Component {
 				year: 0,
 			},
 			error: '',
-			uid: Math.random()
-				.toString( 16 )
-				.slice( 2 ), // Unique identifier to prevent collisions with other Donate blocks' labels.
+			uid: Math.random().toString( 16 ).slice( 2 ), // Unique identifier to prevent collisions with other Donate blocks' labels.
 		};
 	}
 	componentDidMount() {
@@ -72,15 +70,8 @@ class Edit extends Component {
 		return data;
 	}
 
-	isStreamlinedAvailable() {
-		return window.newspack_blocks_data?.can_use_streamlined_donate_block;
-	}
-
-	isStreamlinedForm() {
-		if ( ! this.isStreamlinedAvailable() ) {
-			return false;
-		}
-		return this.props.attributes.isStreamlined;
+	isRenderingStreamlinedBlock() {
+		return window.newspack_blocks_data?.is_rendering_streamlined_block;
 	}
 
 	sanitizeCurrencyInput = amount => Math.max( 0, parseFloat( amount ).toFixed( 2 ) );
@@ -324,31 +315,56 @@ class Edit extends Component {
 		);
 	}
 
-	renderFooter() {
+	renderButton() {
 		const { attributes, setAttributes } = this.props;
 		const { buttonText } = attributes;
 		return (
+			<button type="submit" onClick={ evt => evt.preventDefault() }>
+				<RichText
+					onChange={ value => setAttributes( { buttonText: value } ) }
+					placeholder={ __( 'Button text…', 'newspack-blocks' ) }
+					value={ buttonText }
+					tagName="span"
+				/>
+			</button>
+		);
+	}
+
+	renderFooter() {
+		const { attributes, setAttributes } = this.props;
+		const { thanksText } = attributes;
+		return (
 			<>
 				<p className="wp-block-newspack-blocks-donate__thanks thanks">
-					{ __( 'Your contribution is appreciated.', 'newspack-blocks' ) }
-				</p>
-				{ this.isStreamlinedForm() && (
-					<div className="wp-block-newspack-blocks-donate__stripe wp-block-newspack-blocks-donate__stripe--editor stripe-payment">
-						<div
-							className="input-placeholder"
-							data-text={ __( 'Card number', 'newspack-blocks' ) }
-						/>
-						<div className="input-placeholder" data-text={ __( 'Email', 'newspack-blocks' ) } />
-					</div>
-				) }
-				<button type="submit" onClick={ evt => evt.preventDefault() }>
 					<RichText
-						onChange={ value => setAttributes( { buttonText: value } ) }
-						placeholder={ __( 'Button text…', 'newspack-blocks' ) }
-						value={ buttonText }
+						onChange={ value => setAttributes( { thanksText: value } ) }
+						placeholder={ __( 'Thank you text…', 'newspack-blocks' ) }
+						value={ thanksText }
 						tagName="span"
 					/>
-				</button>
+				</p>
+				{ this.isRenderingStreamlinedBlock() ? (
+					<div className="wp-block-newspack-blocks-donate__stripe stripe-payment">
+						<div className="stripe-payment__row stripe-payment__row--flex stripe-payment__footer">
+							{ this.renderButton() }
+							<a
+								target="_blank"
+								rel="noreferrer"
+								className="stripe-payment__branding"
+								href="https://stripe.com"
+							>
+								<img
+									width="111"
+									height="26"
+									src={ window.newspack_blocks_data?.streamlined_block_stripe_badge }
+									alt="Stripe"
+								/>
+							</a>
+						</div>
+					</div>
+				) : (
+					this.renderButton()
+				) }
 			</>
 		);
 	}
@@ -416,7 +432,8 @@ class Edit extends Component {
 					<Fragment>
 						<TextControl
 							key="low-tier"
-							label={ __( 'Low-tier' + ' (' + currencySymbol + ')' ) }
+							/* Translators: %s: the symbol for the current currency */
+							label={ sprintf( __( 'Low-tier (%s)' ), currencySymbol ) }
 							type="number"
 							step="0.01"
 							value={ suggestedAmounts[ 0 ] }
@@ -432,7 +449,8 @@ class Edit extends Component {
 						/>
 						<TextControl
 							key="mid-tier"
-							label={ __( 'Mid-tier' + ' (' + currencySymbol + ')' ) }
+							/* Translators: %s: the symbol for the current currency */
+							label={ sprintf( __( 'Mid-tier (%s)' ), currencySymbol ) }
 							type="number"
 							step="0.01"
 							value={ suggestedAmounts[ 1 ] }
@@ -553,20 +571,6 @@ class Edit extends Component {
 							}
 						/>
 					</PanelBody>
-					{ this.isStreamlinedAvailable() && (
-						<PanelBody title={ __( 'Streamlined', 'newspack-blocks' ) } initialOpen={ false }>
-							<ToggleControl
-								key="isStreamlined"
-								checked={ this.isStreamlinedForm() }
-								help={ __(
-									'In streamlined mode, the donation will happen on-site, with no redirection. The donor will only be asked for their credit card number and e-mail address.',
-									'newspack-blocks'
-								) }
-								onChange={ _isStreamlined => setAttributes( { isStreamlined: _isStreamlined } ) }
-								label={ __( 'Streamlined mode', 'newspack-blocks' ) }
-							/>
-						</PanelBody>
-					) }
 				</InspectorControls>
 			</Fragment>
 		);

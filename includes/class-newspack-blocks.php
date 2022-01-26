@@ -23,6 +23,8 @@ class Newspack_Blocks {
 		add_post_type_support( 'post', 'newspack_blocks' );
 		add_post_type_support( 'page', 'newspack_blocks' );
 		add_filter( 'script_loader_tag', [ __CLASS__, 'mark_view_script_as_amp_plus_allowed' ], 10, 2 );
+		add_action( 'jetpack_register_gutenberg_extensions', [ __CLASS__, 'disable_jetpack_donate' ], 99 );
+		add_filter( 'the_content', [ __CLASS__, 'hide_post_content_when_iframe_block_is_fullscreen' ] );
 	}
 
 	/**
@@ -36,6 +38,41 @@ class Newspack_Blocks {
 			return str_replace( '<script', '<script data-amp-plus-allowed', $tag );
 		}
 		return $tag;
+	}
+
+	/**
+	 * Hide the post content when it contains an iframe block that is set to fullscreen mode.
+	 *
+	 * @param string $content post content from the_content hook.
+	 * @return string the post content.
+	 */
+	public static function hide_post_content_when_iframe_block_is_fullscreen( $content ) {
+		if ( has_block( 'newspack-blocks/iframe' ) ) {
+			$blocks = parse_blocks( get_post()->post_content );
+
+			foreach ( $blocks as $block ) {
+				if ( 'newspack-blocks/iframe' === $block['blockName']
+					&& array_key_exists( 'isFullScreen', $block['attrs'] )
+					&& $block['attrs']['isFullScreen']
+					) {
+					// we don't need the post content since the iframe will be fullscreen.
+					$content = render_block( $block );
+
+					add_filter(
+						'body_class',
+						function( $classes ) {
+							$classes[] = 'newspack-post-with-fullscreen-iframe';
+							return $classes;
+						}
+					);
+
+					// we don't need to show Newspack popups since the iframe will take over them.
+					add_filter( 'newspack_popups_assess_has_disabled_popups', '__return_true' );
+				}
+			}
+		}
+
+		return $content;
 	}
 
 	/**
@@ -65,6 +102,46 @@ class Newspack_Blocks {
 	}
 
 	/**
+	 * Path of the Stripe badge file.
+	 */
+	public static function streamlined_block_stripe_badge() {
+		return plugins_url( '/src/assets', NEWSPACK_BLOCKS__PLUGIN_FILE ) . '/stripe-badge.svg';
+	}
+
+	/**
+	 * Possible mimes for iframe archive source file.
+	 */
+	public static function iframe_archive_accepted_file_mimes() {
+		return [ 'application/zip' => 'zip' ];
+	}
+
+	/**
+	 * Possible mimes for iframe document source file.
+	 */
+	public static function iframe_document_accepted_file_mimes() {
+		$mimes = get_allowed_mime_types();
+		return [
+			$mimes['pdf']             => 'pdf',
+			$mimes['doc']             => 'doc',
+			$mimes['docx']            => 'docx',
+			$mimes['xla|xls|xlt|xlw'] => 'xls',
+			$mimes['xlsx']            => 'xlsx',
+			$mimes['pot|pps|ppt']     => 'ppt',
+			$mimes['pptx']            => 'pptx',
+		];
+	}
+
+	/**
+	 * Possible mimes for iframe source file.
+	 */
+	public static function iframe_accepted_file_mimes() {
+		return array_merge(
+			array_values( self::iframe_archive_accepted_file_mimes() ),
+			array_values( self::iframe_document_accepted_file_mimes() )
+		);
+	}
+
+	/**
 	 * Enqueue block scripts and styles for editor.
 	 */
 	public static function enqueue_block_editor_assets() {
@@ -78,17 +155,29 @@ class Newspack_Blocks {
 				$script_data['version'],
 				true
 			);
+
+			$localized_data = [
+				'patterns'                       => self::get_patterns_for_post_type( get_post_type() ),
+				'posts_rest_url'                 => rest_url( 'newspack-blocks/v1/newspack-blocks-posts' ),
+				'specific_posts_rest_url'        => rest_url( 'newspack-blocks/v1/newspack-blocks-specific-posts' ),
+				'authors_rest_url'               => rest_url( 'newspack-blocks/v1/authors' ),
+				'assets_path'                    => plugins_url( '/src/assets', NEWSPACK_BLOCKS__PLUGIN_FILE ),
+				'post_subtitle'                  => get_theme_support( 'post-subtitle' ),
+				'is_rendering_streamlined_block' => self::is_rendering_streamlined_block(),
+				'streamlined_block_stripe_badge' => self::streamlined_block_stripe_badge(),
+				'iframe_accepted_file_mimes'     => self::iframe_accepted_file_mimes(),
+			];
+
+			if ( class_exists( 'WP_REST_Newspack_Author_List_Controller' ) ) {
+				$localized_data['can_use_cap']    = class_exists( 'CoAuthors_Guest_Authors' );
+				$author_list_controller           = new WP_REST_Newspack_Author_List_Controller();
+				$localized_data['editable_roles'] = $author_list_controller->get_editable_roles();
+			}
+
 			wp_localize_script(
 				'newspack-blocks-editor',
 				'newspack_blocks_data',
-				[
-					'patterns'                         => self::get_patterns_for_post_type( get_post_type() ),
-					'posts_rest_url'                   => rest_url( 'newspack-blocks/v1/newspack-blocks-posts' ),
-					'specific_posts_rest_url'          => rest_url( 'newspack-blocks/v1/newspack-blocks-specific-posts' ),
-					'assets_path'                      => plugins_url( '/src/assets', NEWSPACK_BLOCKS__PLUGIN_FILE ),
-					'post_subtitle'                    => get_theme_support( 'post-subtitle' ),
-					'can_use_streamlined_donate_block' => self::can_use_streamlined_donate_block(),
-				]
+				$localized_data
 			);
 
 			wp_set_script_translations(
@@ -109,26 +198,17 @@ class Newspack_Blocks {
 	}
 
 	/**
-	 * Can the experimental stramlined donate block be used?
+	 * Should the Donate block be a "streamlined" block?
 	 *
 	 * @return bool True if it can.
 	 */
-	public static function can_use_streamlined_donate_block() {
+	public static function is_rendering_streamlined_block() {
 		if (
-			// Only in AMP Plus mode.
-			class_exists( 'Newspack\AMP_Enhancements' ) && method_exists( 'Newspack\AMP_Enhancements', 'is_amp_plus_configured' )
-			// The streamlined integration does not support recurring donations by itself. Recurring donation submitted to a Stripe account
-			// connected to NRH will work, because NRH handles the recurring charges.
-			&& class_exists( 'Newspack\Donations' ) && method_exists( 'Newspack\Donations', 'is_platform_nrh' )
-			&& class_exists( 'Newspack\Stripe_Connection' ) && method_exists( 'Newspack\Stripe_Connection', 'get_stripe_data' )
+			class_exists( 'Newspack\Donations' )
+			&& method_exists( 'Newspack\Donations', 'can_use_streamlined_donate_block' )
+			&& method_exists( 'Newspack\Donations', 'is_platform_stripe' )
 		) {
-			$payment_data = \Newspack\Stripe_Connection::get_stripe_data();
-			if (
-				// Has to have Stripe keys.
-				isset( $payment_data['usedPublishableKey'], $payment_data['usedSecretKey'] ) && $payment_data['usedPublishableKey'] && $payment_data['usedSecretKey']
-			) {
-				return Newspack\AMP_Enhancements::is_amp_plus_configured() && Newspack\Donations::is_platform_nrh();
-			}
+			return \Newspack\Donations::can_use_streamlined_donate_block() && \Newspack\Donations::is_platform_stripe();
 		}
 		return false;
 	}
@@ -259,9 +339,6 @@ class Newspack_Blocks {
 	 * @return bool True if AMP, false otherwise.
 	 */
 	public static function is_amp() {
-		if ( class_exists( 'Newspack\AMP_Enhancements' ) && method_exists( 'Newspack\AMP_Enhancements', 'should_use_amp_plus' ) && Newspack\AMP_Enhancements::should_use_amp_plus( 'gam' ) ) {
-			return false;
-		}
 		if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
 			return true;
 		}
@@ -406,15 +483,16 @@ class Newspack_Blocks {
 			);
 		}
 
-		$post_type      = isset( $attributes['postType'] ) ? $attributes['postType'] : [ 'post' ];
-		$authors        = isset( $attributes['authors'] ) ? $attributes['authors'] : array();
-		$categories     = isset( $attributes['categories'] ) ? $attributes['categories'] : array();
-		$tags           = isset( $attributes['tags'] ) ? $attributes['tags'] : array();
-		$tag_exclusions = isset( $attributes['tagExclusions'] ) ? $attributes['tagExclusions'] : array();
-		$specific_posts = isset( $attributes['specificPosts'] ) ? $attributes['specificPosts'] : array();
-		$posts_to_show  = intval( $attributes['postsToShow'] );
-		$specific_mode  = isset( $attributes['specificMode'] ) ? intval( $attributes['specificMode'] ) : false;
-		$args           = array(
+		$post_type           = isset( $attributes['postType'] ) ? $attributes['postType'] : [ 'post' ];
+		$authors             = isset( $attributes['authors'] ) ? $attributes['authors'] : array();
+		$categories          = isset( $attributes['categories'] ) ? $attributes['categories'] : array();
+		$tags                = isset( $attributes['tags'] ) ? $attributes['tags'] : array();
+		$tag_exclusions      = isset( $attributes['tagExclusions'] ) ? $attributes['tagExclusions'] : array();
+		$category_exclusions = isset( $attributes['categoryExclusions'] ) ? $attributes['categoryExclusions'] : array();
+		$specific_posts      = isset( $attributes['specificPosts'] ) ? $attributes['specificPosts'] : array();
+		$posts_to_show       = intval( $attributes['postsToShow'] );
+		$specific_mode       = isset( $attributes['specificMode'] ) ? intval( $attributes['specificMode'] ) : false;
+		$args                = array(
 			'post_type'           => $post_type,
 			'post_status'         => 'publish',
 			'suppress_filters'    => false,
@@ -427,16 +505,42 @@ class Newspack_Blocks {
 			$args['orderby']  = 'post__in';
 		} else {
 			$args['posts_per_page'] = $posts_to_show;
-			if ( count( $newspack_blocks_all_specific_posts_ids ) ) {
-				$args['post__not_in'] = $newspack_blocks_all_specific_posts_ids;
+
+			$show_rendered_posts = apply_filters( 'newspack_blocks_homepage_shown_rendered_posts', false );
+			if ( $show_rendered_posts ) {
+				$args['post__not_in'] = [ get_the_ID() ];
+			} else {
+				if ( count( $newspack_blocks_all_specific_posts_ids ) ) {
+					$args['post__not_in'] = $newspack_blocks_all_specific_posts_ids;
+				}
+				$args['post__not_in'] = array_merge(
+					$args['post__not_in'] ?? [],
+					array_keys( $newspack_blocks_post_id ),
+					get_the_ID() ? [ get_the_ID() ] : []
+				);
 			}
-			$args['post__not_in'] = array_merge(
-				$args['post__not_in'] ?? [],
-				array_keys( $newspack_blocks_post_id ),
-				get_the_ID() ? [ get_the_ID() ] : []
-			);
+
 			if ( $authors && count( $authors ) ) {
-				$args['author__in'] = $authors;
+				$co_authors_names = [];
+
+				if ( class_exists( 'CoAuthors_Guest_Authors' ) ) {
+					$co_authors_guest_authors = new CoAuthors_Guest_Authors();
+
+					foreach ( $authors as $index => $author_id ) {
+						$co_author = $co_authors_guest_authors->get_guest_author_by( 'id', $author_id );
+						if ( $co_author ) {
+							$co_authors_names[] = $co_author->user_nicename;
+							unset( $authors[ $index ] );
+						}
+					}
+				}
+
+				if ( count( $co_authors_names ) ) {
+					// look for authors and co-authors posts.
+					self::filter_posts_clauses_when_co_authors( $authors, $co_authors_names );
+				} else {
+					$args['author__in'] = $authors;
+				}
 			}
 			if ( $categories && count( $categories ) ) {
 				$args['category__in'] = $categories;
@@ -446,6 +550,9 @@ class Newspack_Blocks {
 			}
 			if ( $tag_exclusions && count( $tag_exclusions ) ) {
 				$args['tag__not_in'] = $tag_exclusions;
+			}
+			if ( $category_exclusions && count( $category_exclusions ) ) {
+				$args['category__not_in'] = $category_exclusions;
 			}
 		}
 		return $args;
@@ -541,6 +648,15 @@ class Newspack_Blocks {
 		if ( false !== $post_type ) {
 			$classes[] = 'type-' . $post_type;
 		}
+
+		/**
+		 * Filter the array of class names before applying them to the HTML.
+		 *
+		 * @param array $classes Array of term class names.
+		 *
+		 * @return array Filtered array of term class names.
+		 */
+		$classes = apply_filters( 'newspack_blocks_term_classes', $classes );
 
 		return implode( ' ', $classes );
 	}
@@ -694,6 +810,7 @@ class Newspack_Blocks {
 					$sponsor_logos[] = array(
 						'url'    => $sponsor['sponsor_url'],
 						'src'    => esc_url( $sponsor['sponsor_logo']['src'] ),
+						'alt'    => esc_attr( $sponsor['sponsor_name'] ),
 						'width'  => esc_attr( $sponsor['sponsor_logo']['img_width'] ),
 						'height' => esc_attr( $sponsor['sponsor_logo']['img_height'] ),
 					);
@@ -709,7 +826,15 @@ class Newspack_Blocks {
 	/**
 	 * Closure for excerpt filtering that can be added and removed.
 	 *
-	 * @var newspack_blocks_excerpt_length_closure
+	 * @var Closure
+	 */
+	public static $newspack_blocks_excerpt_closure = null;
+
+	/**
+	 * Closure for excerpt length filtering that can be added and removed.
+	 *
+	 * @var Closure
+	 * @deprecated
 	 */
 	public static $newspack_blocks_excerpt_length_closure = null;
 
@@ -726,6 +851,48 @@ class Newspack_Blocks {
 	/**
 	 * Filter for excerpt length.
 	 *
+	 * @param array $attributes The block's attributes.
+	 */
+	public static function filter_excerpt( $attributes ) {
+		if ( empty( $attributes['excerptLength'] ) || ! $attributes['showExcerpt'] ) {
+			return;
+		}
+
+		self::$newspack_blocks_excerpt_closure = function( $text = '', $post = null ) use ( $attributes ) {
+			$post        = get_post( $post );
+			$text        = $post->post_excerpt;
+			$raw_excerpt = $text;
+
+			if ( empty( $text ) ) {
+				$text = get_the_content( '', false, $post );
+				$text = strip_shortcodes( $text );
+				$text = excerpt_remove_blocks( $text );
+			}
+
+			/** This filter is documented in wp-includes/post-template.php */
+			$text = str_replace( ']]>', ']]&gt;', $text );
+			$text = wp_trim_words( $text, $attributes['excerptLength'], static::more_excerpt() );
+
+			/** This filter is documented in wp-includes/post-template.php */
+			return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt ); // phpcs:ignore
+		};
+
+		add_filter( 'get_the_excerpt', self::$newspack_blocks_excerpt_closure, 11, 2 );
+	}
+
+	/**
+	 * Remove excerpt filter after Homepage Posts block loop.
+	 */
+	public static function remove_excerpt_filter() {
+		if ( static::$newspack_blocks_excerpt_closure ) {
+			remove_filter( 'get_the_excerpt', static::$newspack_blocks_excerpt_closure, 11 );
+		}
+	}
+
+	/**
+	 * Filter for excerpt length.
+	 *
+	 * @deprecated
 	 * @param array $attributes The block's attributes.
 	 */
 	public static function filter_excerpt_length( $attributes ) {
@@ -747,6 +914,8 @@ class Newspack_Blocks {
 
 	/**
 	 * Remove excerpt length filter after Homepage Posts block loop.
+	 *
+	 * @deprecated
 	 */
 	public static function remove_excerpt_length_filter() {
 		if ( self::$newspack_blocks_excerpt_length_closure ) {
@@ -769,6 +938,7 @@ class Newspack_Blocks {
 	/**
 	 * Filter for excerpt ellipsis.
 	 *
+	 * @deprecated
 	 * @param array $attributes The block's attributes.
 	 */
 	public static function filter_excerpt_more( $attributes ) {
@@ -780,9 +950,89 @@ class Newspack_Blocks {
 
 	/**
 	 * Remove excerpt ellipsis filter after Homepage Posts block loop.
+	 *
+	 * @deprecated
 	 */
 	public static function remove_excerpt_more_filter() {
 		remove_filter( 'excerpt_more', [ __CLASS__, 'more_excerpt' ], 999 );
+	}
+
+	/**
+	 * Closure for posts clauses when we have co-authors can be added and removed.
+	 *
+	 * @var $newspack_blocks_posts_clauses_when_co_authors_closure
+	 */
+	public static $newspack_blocks_posts_clauses_when_co_authors_closure = null;
+
+	/**
+	 * Filter posts by authors and co-authors.
+	 *
+	 * @param int[]    $authors_ids Authors IDs to filter with.
+	 * @param string[] $co_authors_names Co-authors names to filter with.
+	 */
+	public static function filter_posts_clauses_when_co_authors( $authors_ids, $co_authors_names ) {
+		self::$newspack_blocks_posts_clauses_when_co_authors_closure = add_filter(
+			'posts_clauses',
+			function( $clauses ) use ( $authors_ids, $co_authors_names ) {
+				global $wpdb;
+
+				// co-author tax query.
+				$tax_query = array(
+					array(
+						'taxonomy' => 'author',
+						'field'    => 'name',
+						'terms'    => $co_authors_names,
+					),
+				);
+
+				// Generate the tax query SQL.
+				$tax_query = new WP_Tax_Query( $tax_query );
+				$tax_query = $tax_query->get_sql( $wpdb->posts, 'ID' );
+
+				// Generate the author query SQL.
+				$csv     = implode( ',', wp_parse_id_list( (array) $authors_ids ) );
+				$authors = " {$wpdb->posts}.post_author IN ( $csv ) ";
+
+				// Make sure the authors are set and the tax query is valid (doesn't contain 0 = 1).
+				if ( false === strpos( $tax_query['where'], ' 0 = 1' ) ) {
+					// Append to the current join/where parts.
+					$clauses['join']  .= $tax_query['join'];
+					$clauses['where'] .= sprintf(
+					// The tax query SQL comes prepended with AND.
+						' AND ( %s ( 1=1 %s ) ) ',
+						empty( $authors_ids ) ? '' : "$authors OR",
+						$tax_query['where']
+					);
+				}
+
+				return $clauses;
+			},
+			999
+		);
+
+		add_filter( 'posts_groupby', [ 'Newspack_Blocks', 'group_by_post_id_filter' ], 999 );
+	}
+
+	/**
+	 * Group by post ID filter, used when we join taxonomies while getting posts.
+	 */
+	public static function group_by_post_id_filter() {
+		global $wpdb;
+		return "{$wpdb->posts}.ID ";
+	}
+
+	/**
+	 * Remove posts clauses filter after Homepage Posts block loop.
+	 */
+	public static function remove_filter_posts_clauses_when_co_authors_filter() {
+		if ( self::$newspack_blocks_posts_clauses_when_co_authors_closure ) {
+			remove_filter(
+				'posts_clauses',
+				self::$newspack_blocks_posts_clauses_when_co_authors_closure,
+				999
+			);
+			remove_filter( 'posts_groupby', [ 'Newspack_Blocks', 'group_by_post_id_filter' ] );
+		}
 	}
 
 	/**
@@ -833,6 +1083,51 @@ class Newspack_Blocks {
 		];
 
 		return wp_kses( $svg, $allowed_html );
+	}
+
+	/**
+	 * Disable Jetpack's donate block when using Newspack donations.
+	 */
+	public static function disable_jetpack_donate() {
+		// Do nothing if Jetpack's blocks or Newspack aren't being used.
+		if ( ! class_exists( 'Jetpack_Gutenberg' ) || ! class_exists( 'Newspack' ) ) {
+			return;
+		}
+
+		// Allow Jetpack donations if Newspack donations isn't set up.
+		$donate_settings = Newspack\Donations::get_donation_settings();
+		if ( is_wp_error( $donate_settings ) || ! $donate_settings['created'] ) {
+			return;
+		}
+
+		// Tell Jetpack to mark the donations feature as unavailable.
+		Jetpack_Gutenberg::set_extension_unavailable(
+			'jetpack/donations',
+			esc_html__( 'Jetpack donations is disabled in favour of Newspack donations.', 'newspack-blocks' )
+		);
+	}
+
+	/**
+	 * Loads a template with given data in scope.
+	 *
+	 * @param string $template Name of the template to be included.
+	 * @param array  $data     Data to be passed into the template to be included.
+	 * @param string $path     (Optional) Path to the folder containing the template.
+	 * @return string
+	 */
+	public static function template_include( $template, $data = [], $path = NEWSPACK_BLOCKS__PLUGIN_DIR . 'src/templates/' ) {
+		if ( ! strpos( $template, '.php' ) ) {
+			$template = $template . '.php';
+		}
+		$path .= $template;
+		if ( ! is_file( $path ) ) {
+			return '';
+		}
+		ob_start();
+		include $path;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		return $contents;
 	}
 }
 Newspack_Blocks::init();
