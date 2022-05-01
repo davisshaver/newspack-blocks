@@ -1,3 +1,50 @@
+# [1.48.0](https://github.com/Automattic/newspack-blocks/compare/v1.47.2...v1.48.0) (2022-04-18)
+
+
+### Features
+
+* add 3 new subscribe patterns ([#1091](https://github.com/Automattic/newspack-blocks/issues/1091)) ([1d7f688](https://github.com/Automattic/newspack-blocks/commit/1d7f688bec956381c3395ee429d2c85c4a670620))
+* **donate-streamlined:** set user ID on Stripe client ([#1095](https://github.com/Automattic/newspack-blocks/issues/1095)) ([e9f4bd5](https://github.com/Automattic/newspack-blocks/commit/e9f4bd54fd577e2afb7bdf1456be48eeb9a95ac8))
+* publish on npm when releasing ([e77fdf6](https://github.com/Automattic/newspack-blocks/commit/e77fdf618fd9cbfba1285952e52a89044edc93a2)), closes [#849](https://github.com/Automattic/newspack-blocks/issues/849)
+
+# [1.48.0-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v1.47.2...v1.48.0-alpha.1) (2022-04-14)
+
+
+### Features
+
+* add 3 new subscribe patterns ([#1091](https://github.com/Automattic/newspack-blocks/issues/1091)) ([1d7f688](https://github.com/Automattic/newspack-blocks/commit/1d7f688bec956381c3395ee429d2c85c4a670620))
+* **donate-streamlined:** set user ID on Stripe client ([#1095](https://github.com/Automattic/newspack-blocks/issues/1095)) ([e9f4bd5](https://github.com/Automattic/newspack-blocks/commit/e9f4bd54fd577e2afb7bdf1456be48eeb9a95ac8))
+* publish on npm when releasing ([e77fdf6](https://github.com/Automattic/newspack-blocks/commit/e77fdf618fd9cbfba1285952e52a89044edc93a2)), closes [#849](https://github.com/Automattic/newspack-blocks/issues/849)
+
+## [1.47.2](https://github.com/Automattic/newspack-blocks/compare/v1.47.1...v1.47.2) (2022-04-07)
+
+
+### Bug Fixes
+
+* force release ([af2c2ba](https://github.com/Automattic/newspack-blocks/commit/af2c2ba7279a6aa083deb2ed41dd00c50ae2b5ea))
+* restore post__in sort order for specific posts mode ([#1093](https://github.com/Automattic/newspack-blocks/issues/1093)) ([84dfa8f](https://github.com/Automattic/newspack-blocks/commit/84dfa8f637e12ff6c9cd31ee13cfe727715c308a))
+
+## [1.47.2-hotfix.1](https://github.com/Automattic/newspack-blocks/compare/v1.47.1...v1.47.2-hotfix.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* restore post__in sort order for specific posts mode ([a7e52e7](https://github.com/Automattic/newspack-blocks/commit/a7e52e757d0aec56e3300995ad0f5fdd4a199959))
+
+## [1.47.1](https://github.com/Automattic/newspack-blocks/compare/v1.47.0...v1.47.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* **posts-query:** specific posts getting ([#1090](https://github.com/Automattic/newspack-blocks/issues/1090)) ([231d62d](https://github.com/Automattic/newspack-blocks/commit/231d62d95a66986ad8f6e1490ee9324045b3416e))
+
+## [1.47.1-hotfix.1](https://github.com/Automattic/newspack-blocks/compare/v1.47.0...v1.47.1-hotfix.1) (2022-04-07)
+
+
+### Bug Fixes
+
+* **posts-query:** specific posts getting ([f9326db](https://github.com/Automattic/newspack-blocks/commit/f9326dbe931522f4e7c66b44d8aee3ed095a378a))
+
 # [1.47.0](https://github.com/Automattic/newspack-blocks/compare/v1.46.1...v1.47.0) (2022-04-05)
 
 
