@@ -37,6 +37,7 @@ call_user_func(
 		}
 		$thumbnail_args = array(
 			'data-hero-candidate' => true,
+			'alt'                 => trim( wp_strip_all_tags( get_the_title( $post_id ) ) ),
 		);
 		// If the image position is behind, pass the object-fit setting to maintain styles with AMP.
 		if ( 'behind' === $attributes['mediaPosition'] ) {
@@ -76,6 +77,7 @@ call_user_func(
 		style="<?php echo esc_attr( $styles ); ?>"
 		<?php endif; ?>
 		>
+		<?php echo Newspack_Blocks::get_post_status_label(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		<?php if ( has_post_thumbnail() && $attributes['showImage'] && $attributes['imageShape'] ) : ?>
 			<figure class="post-thumbnail">
 				<?php if ( $post_link ) : ?>
