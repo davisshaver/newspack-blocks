@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * External dependencies
  */
 import { loadStripe } from '@stripe/stripe-js/pure';
+import type * as Stripe from '@stripe/stripe-js/types';
 import 'regenerator-runtime'; // Required in WP >=5.8.
 
 /**
@@ -14,13 +15,25 @@ import 'regenerator-runtime'; // Required in WP >=5.8.
  */
 import * as utils from './utils';
 import './style.scss';
+import type { DonationSettings } from '../types';
 
 export const processStreamlinedElements = ( parentElement = document ) =>
 	[ ...parentElement.querySelectorAll( '.stripe-payment' ) ].forEach( async el => {
-		let stripe, cardElement, paymentRequest, paymentMethod, paymentRequestToken;
+		let stripe: Stripe.Stripe | null,
+			cardElement: Stripe.StripeCardElement,
+			paymentRequest: Stripe.PaymentRequest,
+			paymentMethod: Stripe.ConfirmCardPaymentData[ 'payment_method' ],
+			paymentRequestToken: Stripe.Token,
+			isCardUIVisible = false;
 
-		const formElement = el.closest( 'form' );
-		const messagesEl = el.querySelector( '.stripe-payment__messages' );
+		const formElement: HTMLFormElement | null = el.closest( 'form' );
+		if ( ! formElement ) {
+			return;
+		}
+		const messagesEl: HTMLDivElement | null = el.querySelector( '.stripe-payment__messages' );
+		if ( ! messagesEl ) {
+			return;
+		}
 
 		const settings = utils.getSettings( formElement );
 
@@ -28,12 +41,46 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 		const enableForm = () => el.classList.remove( 'stripe-payment--disabled' );
 		enableForm();
 
+		// Display CC UI.
+		const displayCardUI = () => {
+			if ( isCardUIVisible ) {
+				return;
+			}
+			const inputsHiddenEl = el.querySelector( '.stripe-payment__inputs.stripe-payment--hidden' );
+			if ( inputsHiddenEl ) {
+				inputsHiddenEl.classList.remove( 'stripe-payment--hidden' );
+				isCardUIVisible = true;
+			}
+		};
+
+		const getCaptchaToken = async ( captchaSiteKey: string ) => {
+			return new Promise( ( res, rej ) => {
+				const { grecaptcha } = window;
+				if ( ! grecaptcha ) {
+					return res( '' );
+				}
+
+				if ( ! grecaptcha?.ready || ! captchaSiteKey ) {
+					rej( __( 'Error loading the reCaptcha library.', 'newspack-blocks' ) );
+				}
+
+				grecaptcha.ready( async () => {
+					try {
+						const token = await grecaptcha.execute( captchaSiteKey, { action: 'submit' } );
+						return res( token );
+					} catch ( e ) {
+						rej( e );
+					}
+				} );
+			} );
+		};
+
 		// Universal payment handling, for both card and payment request button flows.
 		// In card flow, this will happen after user submits their card data in the HTML form.
 		// In payment request flow, this will happen after the user validates the payment in
 		// the browser/OS UI.
 		const payWithToken = async (
-			token,
+			token: Stripe.Token,
 			/**
 			 * Overrides for sent donation data. In a card flow the data is
 			 * provided explicitly by the user (via the form), but in payment request flow
@@ -41,8 +88,36 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 			 */
 			requestPayloadOverrides = {}
 		) => {
-			const formValues = utils.getFormValues( formElement );
+			if ( ! stripe ) {
+				return;
+			}
+
+			// Add reCaptcha challenge to form submission, if available.
+			const captchaSiteKey = settings?.captchaSiteKey;
+			let captchaToken;
+			if ( captchaSiteKey ) {
+				try {
+					captchaToken = await getCaptchaToken( captchaSiteKey );
+				} catch ( e ) {
+					const errorMessage =
+						e instanceof Error
+							? e.message
+							: __( 'Error processing captcha request.', 'newspack-blocks' );
+					utils.renderMessages( [ errorMessage ], messagesEl );
+					return { error: true };
+				}
+			}
+			const formValues = utils.getDonationFormValues( formElement );
+			const promptOrigin = formElement.closest( 'amp-layout.newspack-popup' );
+
+			// If the donation originated from a Campaigns prompt, append the prompt ID to the event label.
+			const origin =
+				promptOrigin && promptOrigin.hasAttribute( 'amp-access' )
+					? promptOrigin.getAttribute( 'amp-access' )
+					: null;
+
 			const apiRequestPayload = {
+				captchaToken,
 				tokenData: token,
 				amount: utils.getTotalAmount( formElement ),
 				email: formValues.email,
@@ -50,8 +125,10 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 				frequency: formValues.donation_frequency,
 				newsletter_opt_in: Boolean( formValues.newsletter_opt_in ),
 				clientId: formValues.cid,
+				origin,
 				...requestPayloadOverrides,
 			};
+
 			const chargeResultData = await utils.sendAPIRequest( '/donate', apiRequestPayload );
 
 			// Error handling.
@@ -64,7 +141,7 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 				return { error: true };
 			}
 
-			const exitWithError = errorMessage => {
+			const exitWithError = ( errorMessage: Stripe.StripeError[ 'message' ] ) => {
 				utils.renderMessages( [ errorMessage ], messagesEl );
 				enableForm();
 				return { error: true };
@@ -111,12 +188,18 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 
 		const initStripe = async () => {
 			stripe = await loadStripe( settings.stripePublishableKey );
-
+			if ( ! stripe ) {
+				return;
+			}
+			const cardElementContainer: HTMLElement | null = el.querySelector( '.stripe-payment__card' );
+			if ( ! cardElementContainer ) {
+				return;
+			}
 			const elements = stripe.elements();
 
 			// Handle card element.
 			cardElement = elements.create( 'card' );
-			cardElement.mount( el.querySelector( '.stripe-payment__card' ) );
+			cardElement.mount( cardElementContainer );
 
 			// Handle payment request button (Apple/Google Pay). This has to be initialised to see if
 			// such payments are available in the browser (canMakePayment method).
@@ -144,7 +227,7 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 					} );
 					// The UI messages are handled in payWithToken, this event listener only
 					// has to notify the browser that the payment is done.
-					event.complete( result.error ? 'fail' : 'success' );
+					event.complete( result?.error ? 'fail' : 'success' );
 				} );
 				// Update payment request when the form values are updated.
 				formElement.addEventListener( 'change', () => {
@@ -157,17 +240,24 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 					paymentRequest,
 					style: {
 						paymentRequestButton: {
-							type: 'donate',
+							type: settings.paymentRequestType,
 							height: '46px',
 						},
 					},
 				} );
-				const prButtonElement = el.querySelector( '.stripe-payment__request-button' );
+				const prButtonElement: HTMLButtonElement | null = el.querySelector(
+					'.stripe-payment__request-button'
+				);
+				if ( ! prButtonElement ) {
+					return;
+				}
 				prButton.mount( prButtonElement );
 				prButtonElement.classList.remove( 'stripe-payment--hidden' );
 				setTimeout( () => {
 					prButtonElement.classList.remove( 'stripe-payment__request-button--invisible' );
 				}, 0 );
+			} else {
+				displayCardUI();
 			}
 
 			el.classList.remove( 'stripe-payment--invisible' );
@@ -176,23 +266,34 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 		initStripe();
 
 		// Card form unravelling.
-		const submitButtonEl = el.querySelector( 'button[type="submit"]' );
-		submitButtonEl.onclick = e => {
-			const inputsHiddenEl = el.querySelector( '.stripe-payment__inputs.stripe-payment--hidden' );
-			if ( inputsHiddenEl ) {
-				e.preventDefault();
-				inputsHiddenEl.classList.remove( 'stripe-payment--hidden' );
-			}
-		};
+		const submitButtonEl: HTMLButtonElement | null = el.querySelector( 'button[type="submit"]' );
+		if ( submitButtonEl ) {
+			submitButtonEl.onclick = e => {
+				if ( ! isCardUIVisible ) {
+					e.preventDefault();
+					displayCardUI();
+				}
+			};
+		}
 
 		const updateFeesAmount = () => {
 			const feesAmountEl = el.querySelector( '#stripe-fees-amount' );
 			if ( feesAmountEl ) {
 				const formValues = Object.fromEntries( new FormData( formElement ) );
 				const feeAmount = utils.getFeeAmount( formElement );
-				feesAmountEl.innerHTML = `(${ settings.currencySymbol }${ feeAmount.toFixed(
-					2
-				) } ${ settings.frequencies[ formValues.donation_frequency ].toLowerCase() })`;
+				if ( feeAmount === 0 ) {
+					const feesAmountContainerEl: HTMLElement | null = el.querySelector(
+						'#stripe-fees-amount-container'
+					);
+					if ( feesAmountContainerEl ) {
+						feesAmountContainerEl.style.display = 'none';
+					}
+				}
+				if ( typeof formValues.donation_frequency === 'string' ) {
+					feesAmountEl.innerHTML = `(${ settings.currencySymbol }${ feeAmount.toFixed(
+						2
+					) } ${ settings.frequencies[ formValues.donation_frequency ].toLowerCase() })`;
+				}
 			}
 		};
 
@@ -201,6 +302,9 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 
 		// Card payment flow – on form submission.
 		formElement.addEventListener( 'submit', async e => {
+			if ( ! stripe ) {
+				return;
+			}
 			e.preventDefault();
 			disableForm();
 			utils.renderMessages(
@@ -209,16 +313,20 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 				'info'
 			);
 
-			const formValues = utils.getFormValues( formElement );
-			const validationErrors = Object.values( utils.validateFormData( formValues ) );
+			const formValues = utils.getDonationFormValues( formElement );
+			const validationErrors = Object.values(
+				utils.validateFormData( formValues, settings as DonationSettings )
+			);
 			if ( validationErrors.length > 0 ) {
 				utils.renderMessages( validationErrors, messagesEl );
 				enableForm();
 				return;
 			}
 
-			const handleStripeSDKError = error => {
-				validationErrors.push( error.message );
+			const handleStripeSDKError = ( error: Stripe.StripeError ) => {
+				if ( error.message ) {
+					validationErrors.push( error.message );
+				}
 				utils.renderMessages( validationErrors, messagesEl );
 				enableForm();
 			};
@@ -242,6 +350,9 @@ export const processStreamlinedElements = ( parentElement = document ) =>
 			await payWithToken( stripeTokenCreationResult.token, {
 				payment_method_id: paymentMethodCreationResult.paymentMethod.id,
 			} );
+			if ( window.newspackReaderActivation?.refreshAuthentication ) {
+				window.newspackReaderActivation.refreshAuthentication();
+			}
 		} );
 	} );
 

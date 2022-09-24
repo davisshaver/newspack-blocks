@@ -3,7 +3,22 @@ declare global {
 		wpcomGutenberg: {
 			blogPublic: string;
 		};
-		newspack_blocks_data: { assets_path: string };
+		newspack_blocks_data: {
+			assets_path: string;
+			is_rendering_streamlined_block?: boolean;
+		};
+		grecaptcha: any;
+		newspackReaderActivation: {
+			on: function;
+			off: function;
+			setReaderEmail: function;
+			setAuthenticated: function;
+			refreshAuthentication: function;
+			getReader: function;
+			hasAuthLink: function;
+			setAuthStrategy: function;
+			getAuthStrategy: function;
+		};
 	}
 
 	type PostId = number;
@@ -25,7 +40,7 @@ declare global {
 		clientId: string;
 		attributes: {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			[ key: string ]: any;
+			[key: string]: any;
 		};
 		innerBlocks: Block[];
 	};
@@ -35,4 +50,4 @@ declare global {
 	};
 }
 
-export {};
+export { };
