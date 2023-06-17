@@ -1,3 +1,103 @@
+# [1.69.0](https://github.com/Automattic/newspack-blocks/compare/v1.68.2...v1.69.0) (2023-06-05)
+
+
+### Bug Fixes
+
+* **checkout-button:** overlay class for modal stacking ([#1461](https://github.com/Automattic/newspack-blocks/issues/1461)) ([21b6a44](https://github.com/Automattic/newspack-blocks/commit/21b6a4465d6182ad64f36d065cf7c35241dd5d5e))
+
+
+### Features
+
+* adding link to the author bio avatar ([#1449](https://github.com/Automattic/newspack-blocks/issues/1449)) ([60d9f1c](https://github.com/Automattic/newspack-blocks/commit/60d9f1c61306b9c76be3f487d56f95a04a4565f0))
+* **checkout-button:** front-end product variation selection ([#1459](https://github.com/Automattic/newspack-blocks/issues/1459)) ([d492a9a](https://github.com/Automattic/newspack-blocks/commit/d492a9ade4ef5030fbda6e2b156e3d823813383d))
+* **checkout-button:** support product variations ([#1442](https://github.com/Automattic/newspack-blocks/issues/1442)) ([aa70495](https://github.com/Automattic/newspack-blocks/commit/aa70495940a6c85e9eb9747eb91a989df97e9921))
+* **modal-checkout:** always use donation billing fields ([#1463](https://github.com/Automattic/newspack-blocks/issues/1463)) ([de674c7](https://github.com/Automattic/newspack-blocks/commit/de674c7732f2dccd4e508efb6fabde0816a01fb7))
+
+# [1.69.0-alpha.3](https://github.com/Automattic/newspack-blocks/compare/v1.69.0-alpha.2...v1.69.0-alpha.3) (2023-06-01)
+
+
+### Bug Fixes
+
+* **checkout-button:** overlay class for modal stacking ([#1461](https://github.com/Automattic/newspack-blocks/issues/1461)) ([21b6a44](https://github.com/Automattic/newspack-blocks/commit/21b6a4465d6182ad64f36d065cf7c35241dd5d5e))
+
+# [1.69.0-alpha.2](https://github.com/Automattic/newspack-blocks/compare/v1.69.0-alpha.1...v1.69.0-alpha.2) (2023-05-31)
+
+
+### Features
+
+* **checkout-button:** front-end product variation selection ([#1459](https://github.com/Automattic/newspack-blocks/issues/1459)) ([d492a9a](https://github.com/Automattic/newspack-blocks/commit/d492a9ade4ef5030fbda6e2b156e3d823813383d))
+
+# [1.69.0-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v1.68.2...v1.69.0-alpha.1) (2023-05-25)
+
+
+### Features
+
+* adding link to the author bio avatar ([#1449](https://github.com/Automattic/newspack-blocks/issues/1449)) ([60d9f1c](https://github.com/Automattic/newspack-blocks/commit/60d9f1c61306b9c76be3f487d56f95a04a4565f0))
+* **checkout-button:** support product variations ([#1442](https://github.com/Automattic/newspack-blocks/issues/1442)) ([aa70495](https://github.com/Automattic/newspack-blocks/commit/aa70495940a6c85e9eb9747eb91a989df97e9921))
+
+## [1.68.2](https://github.com/Automattic/newspack-blocks/compare/v1.68.1...v1.68.2) (2023-05-24)
+
+
+### Bug Fixes
+
+* bump up font size on smallest blocks ([#1443](https://github.com/Automattic/newspack-blocks/issues/1443)) ([97c77c3](https://github.com/Automattic/newspack-blocks/commit/97c77c3129c352b541be47e7b842f0b048165a81))
+
+## [1.68.2-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v1.68.1...v1.68.2-alpha.1) (2023-05-11)
+
+
+### Bug Fixes
+
+* bump up font size on smallest blocks ([#1443](https://github.com/Automattic/newspack-blocks/issues/1443)) ([97c77c3](https://github.com/Automattic/newspack-blocks/commit/97c77c3129c352b541be47e7b842f0b048165a81))
+
+## [1.68.1](https://github.com/Automattic/newspack-blocks/compare/v1.68.0...v1.68.1) (2023-05-09)
+
+
+### Bug Fixes
+
+* **checkout-button:** ensure modal "order received" url ([#1447](https://github.com/Automattic/newspack-blocks/issues/1447)) ([0b9bce5](https://github.com/Automattic/newspack-blocks/commit/0b9bce5e6f4c795fc427b0c3a45fde7db05d5e69))
+
+# [1.68.0](https://github.com/Automattic/newspack-blocks/compare/v1.67.0...v1.68.0) (2023-05-08)
+
+
+### Bug Fixes
+
+* **checkout-button:** add to block list ([#1435](https://github.com/Automattic/newspack-blocks/issues/1435)) ([4376952](https://github.com/Automattic/newspack-blocks/commit/4376952c58e9b0a045d4afd72d77afd03f54b5d4))
+* correct linting errors ([05d3e12](https://github.com/Automattic/newspack-blocks/commit/05d3e128f6552f0e9c7d50a63da06597c2aa0517))
+* correct linting errors ([70f26d6](https://github.com/Automattic/newspack-blocks/commit/70f26d62ad116d8f014105ed76ab1ee622bd1683))
+* **donate:** tiers based layout support check ([#1428](https://github.com/Automattic/newspack-blocks/issues/1428)) ([284f7a4](https://github.com/Automattic/newspack-blocks/commit/284f7a4afe102f99dcf2438d9567399f5f36c419))
+* fixing linting errors ([7448cd2](https://github.com/Automattic/newspack-blocks/commit/7448cd251ef7a64c1d9d342d25df7777e034dbb7))
+
+
+### Features
+
+* Add brand query support to the blocks [#1427](https://github.com/Automattic/newspack-blocks/issues/1427) ([acf3ad8](https://github.com/Automattic/newspack-blocks/commit/acf3ad8fdce9fbfc092e1c4102527a20ac51f53d))
+* add brands to post carousel ([e354d49](https://github.com/Automattic/newspack-blocks/commit/e354d49369b30d5e586c421f0ce3d9f9a99a5b50))
+* add check for plugin before rendering fields ([9f237bb](https://github.com/Automattic/newspack-blocks/commit/9f237bbe07fc1bba5c280fe3f17441f2cbb59415))
+* checkout button block ([#1421](https://github.com/Automattic/newspack-blocks/issues/1421)) ([4890a26](https://github.com/Automattic/newspack-blocks/commit/4890a265ae142adf312ac20e529b90c85e1149a3))
+* initial pass at allowing multi-brand querying ([ce842f2](https://github.com/Automattic/newspack-blocks/commit/ce842f276d31fb4d201e5a78bcf3d9bc15673d7e))
+* reorder query fields to move brands below tags ([8d91cff](https://github.com/Automattic/newspack-blocks/commit/8d91cff9ae6a8bc70a4bdc2c5557ef7b7b3bc108))
+
+# [1.68.0-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v1.67.0...v1.68.0-alpha.1) (2023-04-28)
+
+
+### Bug Fixes
+
+* **checkout-button:** add to block list ([#1435](https://github.com/Automattic/newspack-blocks/issues/1435)) ([4376952](https://github.com/Automattic/newspack-blocks/commit/4376952c58e9b0a045d4afd72d77afd03f54b5d4))
+* correct linting errors ([05d3e12](https://github.com/Automattic/newspack-blocks/commit/05d3e128f6552f0e9c7d50a63da06597c2aa0517))
+* correct linting errors ([70f26d6](https://github.com/Automattic/newspack-blocks/commit/70f26d62ad116d8f014105ed76ab1ee622bd1683))
+* **donate:** tiers based layout support check ([#1428](https://github.com/Automattic/newspack-blocks/issues/1428)) ([284f7a4](https://github.com/Automattic/newspack-blocks/commit/284f7a4afe102f99dcf2438d9567399f5f36c419))
+* fixing linting errors ([7448cd2](https://github.com/Automattic/newspack-blocks/commit/7448cd251ef7a64c1d9d342d25df7777e034dbb7))
+
+
+### Features
+
+* Add brand query support to the blocks [#1427](https://github.com/Automattic/newspack-blocks/issues/1427) ([acf3ad8](https://github.com/Automattic/newspack-blocks/commit/acf3ad8fdce9fbfc092e1c4102527a20ac51f53d))
+* add brands to post carousel ([e354d49](https://github.com/Automattic/newspack-blocks/commit/e354d49369b30d5e586c421f0ce3d9f9a99a5b50))
+* add check for plugin before rendering fields ([9f237bb](https://github.com/Automattic/newspack-blocks/commit/9f237bbe07fc1bba5c280fe3f17441f2cbb59415))
+* checkout button block ([#1421](https://github.com/Automattic/newspack-blocks/issues/1421)) ([4890a26](https://github.com/Automattic/newspack-blocks/commit/4890a265ae142adf312ac20e529b90c85e1149a3))
+* initial pass at allowing multi-brand querying ([ce842f2](https://github.com/Automattic/newspack-blocks/commit/ce842f276d31fb4d201e5a78bcf3d9bc15673d7e))
+* reorder query fields to move brands below tags ([8d91cff](https://github.com/Automattic/newspack-blocks/commit/8d91cff9ae6a8bc70a4bdc2c5557ef7b7b3bc108))
+
 # [1.67.0](https://github.com/Automattic/newspack-blocks/compare/v1.66.1...v1.67.0) (2023-04-24)
 
 
