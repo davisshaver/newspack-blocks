@@ -24,6 +24,10 @@ $form_class          = 'checkout woocommerce-checkout';
 $form_method         = $edit_billing ? 'get' : 'post';
 $form_billing_fields = \Newspack_Blocks\Modal_Checkout::get_prefilled_fields();
 
+$after_success_behavior     = filter_input( INPUT_GET, 'after_success_behavior', FILTER_SANITIZE_STRING );
+$after_success_url          = filter_input( INPUT_GET, 'after_success_url', FILTER_SANITIZE_STRING );
+$after_success_button_label = filter_input( INPUT_GET, 'after_success_button_label', FILTER_SANITIZE_STRING );
+
 if ( $edit_billing ) {
 	$form_class .= ' edit-billing';
 }
@@ -70,13 +74,17 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 <form name="checkout" method="<?php echo esc_attr( $form_method ); ?>" class="<?php echo esc_attr( $form_class ); ?>" action="<?php echo esc_url( $form_action ); ?>" enctype="multipart/form-data">
 
 	<input type="hidden" name="modal_checkout" value="1" />
+	<input type="hidden" name="after_success_behavior" value="<?php echo esc_attr( $after_success_behavior ); ?>" />
+	<input type="hidden" name="after_success_url" value="<?php echo esc_attr( $after_success_url ); ?>" />
+	<input type="hidden" name="after_success_button_label" value="<?php echo esc_attr( $after_success_button_label ); ?>" />
+
 	<?php
 	if ( $edit_billing ) {
 		wp_nonce_field( 'newspack_blocks_edit_billing', 'newspack_blocks_edit_billing_nonce' );
 	}
 	?>
 
-	<div id="order-details-wrapper" class="<?php echo esc_attr( ! \Newspack_Blocks\Modal_Checkout::should_show_order_details() ? 'hidden' : '' ); ?>">
+	<div id="order-details-wrapper">
 		<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 		<h3 id="order_review_heading" class="screen-reader-text"><?php esc_html_e( 'Order Details', 'newspack-blocks' ); ?></h3>
 		<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
