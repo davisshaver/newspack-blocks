@@ -195,10 +195,7 @@ class Edit extends Component {
 						</h3>
 					) }
 					{ IS_SUBTITLE_SUPPORTED_IN_THEME && showSubtitle && (
-						<RawHTML
-							key="subtitle"
-							className="newspack-post-subtitle newspack-post-subtitle--in-homepage-block"
-						>
+						<RawHTML key="subtitle" className="newspack-post-subtitle">
 							{ post.meta.newspack_post_subtitle || '' }
 						</RawHTML>
 					) }
@@ -396,7 +393,6 @@ class Edit extends Component {
 											const isCurrent = colGap === option.value;
 											return (
 												<Button
-													isLarge
 													isPrimary={ isCurrent }
 													aria-pressed={ isCurrent }
 													aria-label={ option.label }
@@ -436,13 +432,13 @@ class Edit extends Component {
 						)
 					) }
 					<ToggleControl
-						label={ __( 'Use deduplication logic', 'newspack-blocks' ) }
+						label={ __( 'Allow duplicate stories', 'newspack-blocks' ) }
 						help={ __(
-							'If unchecked, this block will be excluded from the deduplication logic and may show duplicate posts.',
+							"If checked, this block will be excluded from the page's de-duplication logic. Duplicate stories may appear.",
 							'newspack-blocks'
 						) }
-						checked={ attributes.deduplicate }
-						onChange={ () => setAttributes( { deduplicate: ! attributes.deduplicate } ) }
+						checked={ ! attributes.deduplicate }
+						onChange={ value => setAttributes( { deduplicate: ! value } ) }
 						className="newspack-blocks-deduplication-toggle"
 					/>
 				</PanelBody>
@@ -487,7 +483,6 @@ class Edit extends Component {
 											const isCurrent = imageScale === option.value;
 											return (
 												<Button
-													isLarge
 													isPrimary={ isCurrent }
 													aria-pressed={ isCurrent }
 													aria-label={ option.label }
