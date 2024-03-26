@@ -1,3 +1,108 @@
+## [3.0.5](https://github.com/Automattic/newspack-blocks/compare/v3.0.4...v3.0.5) (2024-03-25)
+
+
+### Bug Fixes
+
+* **author-profile:** only display guest author profile when linked ([#1688](https://github.com/Automattic/newspack-blocks/issues/1688)) ([ee1bb21](https://github.com/Automattic/newspack-blocks/commit/ee1bb2138ad1d8705746585916c371d3b3243089))
+* correct carousel button styles in editor ([#1680](https://github.com/Automattic/newspack-blocks/issues/1680)) ([d4aba73](https://github.com/Automattic/newspack-blocks/commit/d4aba73ee6a65115122d35b1587afbfc28d08fcd))
+* **modal-checkout:** ensure customer location when state is required but country is not ([#1683](https://github.com/Automattic/newspack-blocks/issues/1683)) ([27badf8](https://github.com/Automattic/newspack-blocks/commit/27badf8690dfcc84819bd495a1e0a947756b7739))
+
+## [3.0.5-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v3.0.4...v3.0.5-alpha.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* **author-profile:** only display guest author profile when linked ([#1688](https://github.com/Automattic/newspack-blocks/issues/1688)) ([ee1bb21](https://github.com/Automattic/newspack-blocks/commit/ee1bb2138ad1d8705746585916c371d3b3243089))
+* correct carousel button styles in editor ([#1680](https://github.com/Automattic/newspack-blocks/issues/1680)) ([d4aba73](https://github.com/Automattic/newspack-blocks/commit/d4aba73ee6a65115122d35b1587afbfc28d08fcd))
+* **modal-checkout:** ensure customer location when state is required but country is not ([#1683](https://github.com/Automattic/newspack-blocks/issues/1683)) ([27badf8](https://github.com/Automattic/newspack-blocks/commit/27badf8690dfcc84819bd495a1e0a947756b7739))
+
+## [3.0.4-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v3.0.3...v3.0.4-alpha.1) (2024-03-07)
+
+### Bug Fixes
+
+* correct carousel button styles in editor ([#1680](https://github.com/Automattic/newspack-blocks/issues/1680)) ([d4aba73](https://github.com/Automattic/newspack-blocks/commit/d4aba73ee6a65115122d35b1587afbfc28d08fcd))
+* **modal-checkout:** ensure customer location when state is required but country is not ([#1683](https://github.com/Automattic/newspack-blocks/issues/1683)) ([27badf8](https://github.com/Automattic/newspack-blocks/commit/27badf8690dfcc84819bd495a1e0a947756b7739))
+
+
+## [3.0.3](https://github.com/Automattic/newspack-blocks/compare/v3.0.2...v3.0.3) (2024-03-04)
+
+
+### Bug Fixes
+
+* **author-blocks:** handle HTML in author bio ([#1672](https://github.com/Automattic/newspack-blocks/issues/1672)) ([4b6c3c4](https://github.com/Automattic/newspack-blocks/commit/4b6c3c4e7a1480e7a68f2737d55fa25389034afa))
+
+## [3.0.3-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v3.0.2...v3.0.3-alpha.1) (2024-02-29)
+
+
+### Bug Fixes
+
+* **author-blocks:** handle HTML in author bio ([#1672](https://github.com/Automattic/newspack-blocks/issues/1672)) ([4b6c3c4](https://github.com/Automattic/newspack-blocks/commit/4b6c3c4e7a1480e7a68f2737d55fa25389034afa))
+
+## [3.0.2-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v3.0.1...v3.0.2-alpha.1) (2024-02-23)
+
+
+### Bug Fixes
+
+* **author-blocks:** handle HTML in author bio ([#1672](https://github.com/Automattic/newspack-blocks/issues/1672)) ([4b6c3c4](https://github.com/Automattic/newspack-blocks/commit/4b6c3c4e7a1480e7a68f2737d55fa25389034afa))
+
+## [3.0.2](https://github.com/Automattic/newspack-blocks/compare/v3.0.1...v3.0.2) (2024-02-29)
+
+
+### Bug Fixes
+
+* donate block layout for NRH ([#1682](https://github.com/Automattic/newspack-blocks/issues/1682)) ([230889e](https://github.com/Automattic/newspack-blocks/commit/230889ed5e42389ffc989d5b3b234494e230d7d0))
+
+
+## [3.0.1](https://github.com/Automattic/newspack-blocks/compare/v3.0.0...v3.0.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* handle inactive woocommerce ([36a61a2](https://github.com/Automattic/newspack-blocks/commit/36a61a2384002ded40d7ec75f5c9c3f2854a4418))
+* **hpp:** filter invalid autocomplete tokens ([#1671](https://github.com/Automattic/newspack-blocks/issues/1671)) ([b1f9f39](https://github.com/Automattic/newspack-blocks/commit/b1f9f3996aadadf3afd093fac5157e7a04708f3c))
+
+# [3.0.0](https://github.com/Automattic/newspack-blocks/compare/v2.6.2...v3.0.0) (2024-02-20)
+
+
+### Bug Fixes
+
+* **homepage-articles:** use map_deep to construct articles_rest_url and resolve PHP 8.1 warnings ([#1655](https://github.com/Automattic/newspack-blocks/issues/1655)) ([24085d8](https://github.com/Automattic/newspack-blocks/commit/24085d82c6eacf5b31956d3e07303badeaccbe6d))
+* prevent error in modal-checkout check ([7e2a6c7](https://github.com/Automattic/newspack-blocks/commit/7e2a6c75a28b5a1a6316e45151dbe51c5ae8f72b))
+
+
+### Features
+
+* **ci:** add `epic/*` release workflow and rename `master` to `trunk` ([#1656](https://github.com/Automattic/newspack-blocks/issues/1656)) ([c788e55](https://github.com/Automattic/newspack-blocks/commit/c788e55d58cd7c72310f65d83f14f9e0960c6871))
+* deprecate streamlined (Stripe) Donate block version ([#1638](https://github.com/Automattic/newspack-blocks/issues/1638)) ([11bd0d6](https://github.com/Automattic/newspack-blocks/commit/11bd0d620d882a72f631dfe08f808ddde3308665))
+* **homepage-posts:** add custom taxonomy exclusions filter ([#1641](https://github.com/Automattic/newspack-blocks/issues/1641)) ([b140a99](https://github.com/Automattic/newspack-blocks/commit/b140a99c86cd1a3e825bb0a585225a95652ef331))
+* **reader-revenue:** make NYP and Stripe Gateway optional ([#1645](https://github.com/Automattic/newspack-blocks/issues/1645)) ([1322d7c](https://github.com/Automattic/newspack-blocks/commit/1322d7c4c9c1bab175a2c48ab2d359555d459eea))
+
+
+### BREAKING CHANGES
+
+* streamlined (Stripe) Donate block version is no more
+
+# [3.0.0-alpha.1](https://github.com/Automattic/newspack-blocks/compare/v2.6.2...v3.0.0-alpha.1) (2024-02-08)
+
+
+### Bug Fixes
+
+* **homepage-articles:** use map_deep to construct articles_rest_url and resolve PHP 8.1 warnings ([#1655](https://github.com/Automattic/newspack-blocks/issues/1655)) ([24085d8](https://github.com/Automattic/newspack-blocks/commit/24085d82c6eacf5b31956d3e07303badeaccbe6d))
+* prevent error in modal-checkout check ([7e2a6c7](https://github.com/Automattic/newspack-blocks/commit/7e2a6c75a28b5a1a6316e45151dbe51c5ae8f72b))
+
+
+### Features
+
+* **ci:** add `epic/*` release workflow and rename `master` to `trunk` ([#1656](https://github.com/Automattic/newspack-blocks/issues/1656)) ([c788e55](https://github.com/Automattic/newspack-blocks/commit/c788e55d58cd7c72310f65d83f14f9e0960c6871))
+* deprecate streamlined (Stripe) Donate block version ([#1638](https://github.com/Automattic/newspack-blocks/issues/1638)) ([11bd0d6](https://github.com/Automattic/newspack-blocks/commit/11bd0d620d882a72f631dfe08f808ddde3308665))
+* **homepage-posts:** add custom taxonomy exclusions filter ([#1641](https://github.com/Automattic/newspack-blocks/issues/1641)) ([b140a99](https://github.com/Automattic/newspack-blocks/commit/b140a99c86cd1a3e825bb0a585225a95652ef331))
+* **reader-revenue:** make NYP and Stripe Gateway optional ([#1645](https://github.com/Automattic/newspack-blocks/issues/1645)) ([1322d7c](https://github.com/Automattic/newspack-blocks/commit/1322d7c4c9c1bab175a2c48ab2d359555d459eea))
+
+
+### BREAKING CHANGES
+
+* streamlined (Stripe) Donate block version is no more
+
 ## [2.6.2](https://github.com/Automattic/newspack-blocks/compare/v2.6.1...v2.6.2) (2024-02-08)
 
 
