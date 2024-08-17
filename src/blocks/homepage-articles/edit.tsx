@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-is-valid, @typescript-eslint/no-explicit-any */
 
 /**
  * Internal dependencies
@@ -185,8 +185,8 @@ class Edit extends Component< HomepageArticlesProps > {
 							) }
 							{ showCategory &&
 								( ! post.newspack_post_sponsors || post.newspack_sponsors_show_categories ) && (
-									<RawHTML>{ decodeEntities( post.newspack_category_info ) }</RawHTML>
-								) }
+								<RawHTML>{ decodeEntities( post.newspack_category_info ) }</RawHTML>
+							) }
 						</div>
 					) }
 					{ RichText.isEmpty( sectionHeader ) ? (
@@ -353,7 +353,6 @@ class Edit extends Component< HomepageArticlesProps > {
 		return (
 			<Fragment>
 				<PanelBody title={ __( 'Display Settings', 'newspack-blocks' ) } initialOpen={ true }>
-					{ /* @ts-ignore */ }
 					<QueryControls
 						numberOfItems={ postsToShow }
 						onNumberOfItemsChange={ ( _postsToShow: number ) =>
@@ -840,8 +839,6 @@ class Edit extends Component< HomepageArticlesProps > {
 
 export default compose( [
 	withColors( { textColor: 'color' } ),
-	// @ts-ignore
 	withSelect( postsBlockSelector ),
-	// @ts-ignore
 	withDispatch( postsBlockDispatch ),
 ] as any )( Edit );
