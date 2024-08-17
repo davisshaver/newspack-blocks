@@ -385,7 +385,7 @@ function newspack_blocks_render_block_homepage_articles( $attributes ) {
 		if ( $has_more_button ) :
 			$load_more = '';
 			if ( (bool) $attributes['infiniteScroll'] ) {
-				$load_more = 'data-infinite-scroll';
+				$load_more = 'data-infinite-scroll="true"';
 			}
 			?>
 			<button type="button" class="wp-block-button__link" <?php echo esc_attr( $load_more ); ?> data-next="<?php echo esc_url( $articles_rest_url ); ?>">
