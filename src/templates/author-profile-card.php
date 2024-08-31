@@ -56,7 +56,7 @@ call_user_func(
 		<div class="<?php echo esc_attr( $classes ); ?>">
 			<?php if ( $attributes['showAvatar'] && isset( $author['avatar'] ) ) : ?>
 				<div class="wp-block-newspack-blocks-author-profile__avatar">
-					<figure style="border-radius: <?php echo esc_attr( $attributes['avatarBorderRadius'] ); ?>; height: <?php echo esc_attr( $attributes['avatarSize'] ); ?>px; width: <?php echo esc_attr( $attributes['avatarSize'] ); ?>px;">
+					<figure style="border-radius: <?php echo esc_attr( $attributes['avatarBorderRadius'] ); ?>; width: <?php echo esc_attr( $attributes['avatarSize'] ); ?>px; max-width: 100%; height: auto;">
 					<?php if ( $show_archive_link ) : ?>
 						<a href="<?php echo esc_url( $author['url'] ); ?>">
 						<?php
