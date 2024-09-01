@@ -324,7 +324,16 @@ class WP_REST_Newspack_Authors_Controller extends WP_REST_Controller {
 			$user_data['name'] = $user->data->display_name;
 		}
 		if ( false === $fields || in_array( 'bio', $fields, true ) ) {
-			$user_data['bio'] = get_the_author_meta( 'description', $user->data->ID );
+			$author_bio = get_the_author_meta( 'description', $user->data->ID );
+			$author_bio_length = get_theme_mod( 'author_bio_length', 200 );
+			if (
+				get_theme_mod( 'author_bio_truncate', true ) &&
+				function_exists( 'newspack_truncate_text' )
+			) {
+				$user_data['bio'] = newspack_truncate_text( wp_strip_all_tags( $author_bio ), $author_bio_length );
+			} else {
+				$user_data['bio'] = $author_bio;
+			}
 		}
 		if ( false === $fields || in_array( 'email', $fields, true ) ) {
 			$email_data = self::get_email( $user->data->ID, false, $user->data->user_email );

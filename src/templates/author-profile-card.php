@@ -106,16 +106,17 @@ call_user_func(
 					<?php
 					$bio = $author['bio'];
 
+					echo wp_kses_post( wpautop( $bio ) );
+
 					if ( $show_archive_link ) {
-						$bio .= sprintf(
+						printf(
 							// Translators: "more by this author" link.
-							__( ' <a href="%1$s">More by %2$s</a>', 'newspack-blocks' ),
+							__( ' <a href="%1$s" style="display: block; margin-top: 1em;">More by %2$s</a>', 'newspack-blocks' ),
 							$author['url'],
 							$author['name']
 						);
 					}
 
-					echo wp_kses_post( wpautop( $bio ) );
 					?>
 				<?php endif; ?>
 
