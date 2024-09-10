@@ -40,10 +40,12 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	// Set initial state flags.
 	let isFetching = false;
 	let isInfiniteScrolling = false;
+	window.newspackBlocksIsFetching = window.newspackBlocksIsFetching || false;
+	window.newspackBlocksFetchQueue = window.newspackBlocksFetchQueue || [];
 	let isEndOfData = false;
 
-	btnEl.addEventListener( 'click', () => {
-		// Early return if still fetching or no more posts to render.
+	const loadMore = () => {
+		// Early return if no more posts to render.
 		if ( isFetching || isEndOfData ) {
 			return false;
 		}
@@ -57,57 +59,77 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 		const requestURL =
 			btnEl.getAttribute( 'data-next' ) + '&exclude_ids=' + getRenderedPostsIds().join( ',' );
 
+		// If there's already a fetch in progress, queue this one to run after it ends.
+		if ( window.newspackBlocksIsFetching ) {
+			window.newspackBlocksFetchQueue.push( loadMore );
+			return false;
+		}
+
+		window.newspackBlocksIsFetching = true;
 		fetchWithRetry( { url: requestURL, onSuccess, onError }, fetchRetryCount );
+	};
 
-		/**
-		 * @param {Object} data Post data
-		 */
-		function onSuccess( data ) {
-			// Validate received data.
-			if ( ! isPostsDataValid( data ) ) {
-				return onError();
-			}
-
-			if ( data.items.length ) {
-				// Render posts' HTML from string.
-				const postsHTML = data.items.map( item => item.html ).join( '' );
-				postsContainerEl.insertAdjacentHTML( 'beforeend', postsHTML );
-			}
-
-			if ( data.next ) {
-				// Save next URL as button's attribute.
-				btnEl.setAttribute( 'data-next', data.next );
-			}
-
-			if ( ! data.items.length || ! data.next ) {
-				isEndOfData = true;
-				blockWrapperEl.classList.remove( 'has-more-button' );
-			}
-
-			isFetching = false;
-
-			blockWrapperEl.classList.remove( 'is-loading' );
-
-			isInfiniteScrolling = false;
+	/**
+	 * @param {Object} data Post data
+	 */
+	function onSuccess( data ) {
+		// Validate received data.
+		if ( ! isPostsDataValid( data ) ) {
+			return onError();
 		}
 
-		/**
-		 * Handle fetching error
-		 */
-		function onError() {
-			isFetching = false;
-
-			blockWrapperEl.classList.remove( 'is-loading' );
-			blockWrapperEl.classList.add( 'is-error' );
+		if ( data.items.length ) {
+			// Render posts' HTML from string.
+			const postsHTML = data.items.map( item => item.html ).join( '' );
+			postsContainerEl.insertAdjacentHTML( 'beforeend', postsHTML );
 		}
-	} );
+
+		if ( data.next ) {
+			// Save next URL as button's attribute.
+			btnEl.setAttribute( 'data-next', data.next );
+		}
+
+		if ( ! data.items.length || ! data.next ) {
+			isEndOfData = true;
+			blockWrapperEl.classList.remove( 'has-more-button' );
+		}
+
+		onEnd();
+	}
+
+	/**
+	 * Handle fetching error
+	 */
+	function onError() {
+		isFetching = false;
+		blockWrapperEl.classList.add( 'is-error' );
+		onEnd();
+	}
+
+	/**
+	 * Callback to run after a fetch request is completed.
+	 */
+	function onEnd() {
+		isInfiniteScrolling = false;
+		isFetching = false;
+		window.newspackBlocksIsFetching = false;
+		blockWrapperEl.classList.remove( 'is-loading' );
+
+		// If there are queued fetches, run the next one.
+		if ( window.newspackBlocksFetchQueue.length ) {
+			window.newspackBlocksFetchQueue.shift()();
+		}
+	}
+
+	btnEl.addEventListener( 'click', loadMore );
+
 	if ( isInfiniteScroll ) {
 		// Create an intersection observer instance
 		const btnObserver = new IntersectionObserver(
 			entries => {
 				entries.forEach( entry => {
 					if ( entry.isIntersecting && ! isInfiniteScrolling ) {
-						btnEl.click();
+						loadMore();
 						isInfiniteScrolling = true;
 					}
 				} );
