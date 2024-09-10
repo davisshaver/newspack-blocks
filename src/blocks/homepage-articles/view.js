@@ -38,6 +38,7 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	const isInfiniteScroll = btnEl.getAttribute( 'data-infinite-scroll' );
 
 	// Set initial state flags.
+	let isFetching = false;
 	let isInfiniteScrolling = false;
 	window.newspackBlocksIsFetching = window.newspackBlocksIsFetching || false;
 	window.newspackBlocksFetchQueue = window.newspackBlocksFetchQueue || [];
@@ -45,9 +46,11 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 
 	const loadMore = () => {
 		// Early return if no more posts to render.
-		if ( isEndOfData ) {
+		if ( isFetching || isEndOfData ) {
 			return false;
 		}
+
+		isFetching = true;
 
 		blockWrapperEl.classList.remove( 'is-error' );
 		blockWrapperEl.classList.add( 'is-loading' );
@@ -98,6 +101,7 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	 * Handle fetching error
 	 */
 	function onError() {
+		isFetching = false;
 		blockWrapperEl.classList.add( 'is-error' );
 		onEnd();
 	}
@@ -107,6 +111,7 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	 */
 	function onEnd() {
 		isInfiniteScrolling = false;
+		isFetching = false;
 		window.newspackBlocksIsFetching = false;
 		blockWrapperEl.classList.remove( 'is-loading' );
 
