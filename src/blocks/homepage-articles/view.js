@@ -38,6 +38,7 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	const isInfiniteScroll = btnEl.getAttribute( 'data-infinite-scroll' );
 
 	// Set initial state flags.
+	let isInfiniteScrolling = false;
 	window.newspackBlocksIsFetching = window.newspackBlocksIsFetching || false;
 	window.newspackBlocksFetchQueue = window.newspackBlocksFetchQueue || [];
 	let isEndOfData = false;
@@ -105,6 +106,7 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 	 * Callback to run after a fetch request is completed.
 	 */
 	function onEnd() {
+		isInfiniteScrolling = false;
 		window.newspackBlocksIsFetching = false;
 		blockWrapperEl.classList.remove( 'is-loading' );
 
@@ -121,8 +123,9 @@ function buildLoadMoreHandler( blockWrapperEl ) {
 		const btnObserver = new IntersectionObserver(
 			entries => {
 				entries.forEach( entry => {
-					if ( entry.isIntersecting ) {
+					if ( entry.isIntersecting && ! isInfiniteScrolling ) {
 						loadMore();
+						isInfiniteScrolling = true;
 					}
 				} );
 			},
