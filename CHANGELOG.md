@@ -1,3 +1,50 @@
+## [4.2.1](https://github.com/Automattic/newspack-blocks/compare/v4.2.0...v4.2.1) (2024-10-09)
+
+
+### Bug Fixes
+
+* re-add block caching ([937ca53](https://github.com/Automattic/newspack-blocks/commit/937ca530fa46e3e404425eb0b8e1e40dea672a69))
+
+# [4.2.0](https://github.com/Automattic/newspack-blocks/compare/v4.1.2...v4.2.0) (2024-10-08)
+
+
+### Bug Fixes
+
+* we know how long the cache is ([ec5083d](https://github.com/Automattic/newspack-blocks/commit/ec5083d233a2c2b534efd08b669d2274e8f3b570))
+
+
+### Features
+
+* block caching ([62ba143](https://github.com/Automattic/newspack-blocks/commit/62ba1439e420420cca940fab9c863d58fc2d0b70))
+* **homepage-posts:** add a show-full-content attribute ([#1886](https://github.com/Automattic/newspack-blocks/issues/1886)) ([09619a9](https://github.com/Automattic/newspack-blocks/commit/09619a992d46b332e1b6358e7021cc5d4ce90d3b))
+* **homepage-posts:** infinite scroll ([#1845](https://github.com/Automattic/newspack-blocks/issues/1845)) ([f5f1c20](https://github.com/Automattic/newspack-blocks/commit/f5f1c20c9033b9de116c96f1579417fe52060631))
+
+## [4.1.2](https://github.com/Automattic/newspack-blocks/compare/v4.1.1...v4.1.2) (2024-09-17)
+
+
+### Bug Fixes
+
+* **modal-checkout:** tweak HTML to satisfy Woo Payments field validation ([#1883](https://github.com/Automattic/newspack-blocks/issues/1883)) ([16b5e9d](https://github.com/Automattic/newspack-blocks/commit/16b5e9db840d7dfccd064776285221c66d92e7f2))
+
+## [4.1.1](https://github.com/Automattic/newspack-blocks/compare/v4.1.0...v4.1.1) (2024-09-16)
+
+
+### Bug Fixes
+
+* support new is_my_account() method from main plugin ([#1869](https://github.com/Automattic/newspack-blocks/issues/1869)) ([b9a3aba](https://github.com/Automattic/newspack-blocks/commit/b9a3aba064073f97bca5e08dd96ff450fe287faf))
+
+# [4.1.0](https://github.com/Automattic/newspack-blocks/compare/v4.0.1...v4.1.0) (2024-08-26)
+
+
+### Bug Fixes
+
+* **homepage-posts:** honor allowing duplicates in load-more ([5ccecbd](https://github.com/Automattic/newspack-blocks/commit/5ccecbd86129e870a183dcb4fe65c18e412a1f48))
+
+
+### Features
+
+* consolidate data flows ([#1836](https://github.com/Automattic/newspack-blocks/issues/1836)) ([ee35511](https://github.com/Automattic/newspack-blocks/commit/ee355117b7c7ba9bee32cfd0e5402cc928559c75)), closes [#1804](https://github.com/Automattic/newspack-blocks/issues/1804) [#1827](https://github.com/Automattic/newspack-blocks/issues/1827)
+
 ## [4.0.1](https://github.com/Automattic/newspack-blocks/compare/v4.0.0...v4.0.1) (2024-08-21)
 
 
