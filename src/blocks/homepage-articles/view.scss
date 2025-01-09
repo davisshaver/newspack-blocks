@@ -291,19 +291,12 @@
 				position: absolute;
 
 				img {
+					filter: brightness(50%);	
 					height: 100% !important;
 					object-fit: cover !important;
 					margin: 0 !important;
 					max-width: 1000% !important;
 					width: 100% !important;
-				}
-
-				&::after {
-					background: rgba(0, 0, 0, 0.5);
-					content: "";
-					inset: 0;
-					position: absolute;
-					z-index: 1;
 				}
 			}
 
@@ -324,6 +317,14 @@
 			.entry-meta .byline a,
 			.cat-links a {
 				color: #fff;
+			}
+
+			.cat-links {
+				pointer-events: auto;
+			}
+
+			.entry-wrapper {
+				pointer-events: none;
 			}
 		}
 
