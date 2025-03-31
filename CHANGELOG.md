@@ -1,3 +1,10 @@
+# [4.9.0](https://github.com/Automattic/newspack-blocks/compare/v4.8.1...v4.9.0) (2025-03-31)
+
+
+### Features
+
+* trigger relase ([4be679e](https://github.com/Automattic/newspack-blocks/commit/4be679ebaf3aa6b7d0cf4917f52bcae1a8a71a5f))
+
 ## [4.8.1](https://github.com/Automattic/newspack-blocks/compare/v4.8.0...v4.8.1) (2025-03-31)
 
 
