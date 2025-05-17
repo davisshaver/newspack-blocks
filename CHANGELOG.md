@@ -1,3 +1,39 @@
+# [4.12.0](https://github.com/Automattic/newspack-blocks/compare/v4.11.0...v4.12.0) (2025-05-14)
+
+
+### Bug Fixes
+
+* adjust cache handling for feeds ([#2112](https://github.com/Automattic/newspack-blocks/issues/2112)) ([f880061](https://github.com/Automattic/newspack-blocks/commit/f8800618a7f61317f0a3e661a469d31982f6e49c))
+* update how we check for the express checkout in the is_modal check ([#2109](https://github.com/Automattic/newspack-blocks/issues/2109)) ([652daf7](https://github.com/Automattic/newspack-blocks/commit/652daf763301079c2ad8c99bf0db14d5ee9c2830))
+
+
+### Features
+
+* add body class depending on theme type ([#2101](https://github.com/Automattic/newspack-blocks/issues/2101)) ([efcda76](https://github.com/Automattic/newspack-blocks/commit/efcda76d08b589657a99fc48774991c4ecc2d458))
+* **content-loop:** support custom bylines ([#2105](https://github.com/Automattic/newspack-blocks/issues/2105)) ([6f70449](https://github.com/Automattic/newspack-blocks/commit/6f704494045e6950c49b2d9ccd11a2c07dd5c5b4))
+* **wcsg:** respect checkbox label option in WCSG settings ([#2053](https://github.com/Automattic/newspack-blocks/issues/2053)) ([58e40c5](https://github.com/Automattic/newspack-blocks/commit/58e40c5c61fe339987a13de28a910b7d9c39d395))
+
+# [4.11.0](https://github.com/Automattic/newspack-blocks/compare/v4.10.2...v4.11.0) (2025-05-08)
+
+
+### Features
+
+* update styles for the Subscription Confirmation checkbox ([#2117](https://github.com/Automattic/newspack-blocks/issues/2117)) ([e61c430](https://github.com/Automattic/newspack-blocks/commit/e61c43045d4fcff282baac6c18b1c3d711c7cc46))
+
+## [4.10.2](https://github.com/Automattic/newspack-blocks/compare/v4.10.1...v4.10.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* add the timezone to the Content Loop datetime attribute ([#2113](https://github.com/Automattic/newspack-blocks/issues/2113)) ([6fbd004](https://github.com/Automattic/newspack-blocks/commit/6fbd0044bd7b5822d464bd569cc4941df5d81e19))
+
+## [4.10.1](https://github.com/Automattic/newspack-blocks/compare/v4.10.0...v4.10.1) (2025-04-21)
+
+
+### Bug Fixes
+
+* **recaptcha:** move clone button code to Newspack\Recaptcha class ([#2111](https://github.com/Automattic/newspack-blocks/issues/2111)) ([a7bcdbd](https://github.com/Automattic/newspack-blocks/commit/a7bcdbd221b19fdbc4d565b0233d1b6de954c1b0))
+
 # [4.10.0](https://github.com/Automattic/newspack-blocks/compare/v4.9.2...v4.10.0) (2025-04-14)
 
 
