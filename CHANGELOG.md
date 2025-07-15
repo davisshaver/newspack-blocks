@@ -1,3 +1,38 @@
+## [4.14.5](https://github.com/Automattic/newspack-blocks/compare/v4.14.4...v4.14.5) (2025-07-14)
+
+
+### Bug Fixes
+
+* **modal-checkout:** price formatting with interval and trial handling ([#2153](https://github.com/Automattic/newspack-blocks/issues/2153)) ([6570cd4](https://github.com/Automattic/newspack-blocks/commit/6570cd46d07c9c030c9a5769a66ba646e2a21308))
+
+## [4.14.4](https://github.com/Automattic/newspack-blocks/compare/v4.14.3...v4.14.4) (2025-07-14)
+
+
+### Bug Fixes
+
+* make sure RTL styles are loaded ([#2164](https://github.com/Automattic/newspack-blocks/issues/2164)) ([c4387f5](https://github.com/Automattic/newspack-blocks/commit/c4387f530c46c924d6181bab5962b59d0700ed6d))
+
+## [4.14.3](https://github.com/Automattic/newspack-blocks/compare/v4.14.2...v4.14.3) (2025-07-08)
+
+
+### Bug Fixes
+
+* **modal-checkout:** return array when getting event handlers ([#2162](https://github.com/Automattic/newspack-blocks/issues/2162)) ([c9ba6ec](https://github.com/Automattic/newspack-blocks/commit/c9ba6ec285e2da43d1178451e9d80bba8044974a))
+
+## [4.14.2](https://github.com/Automattic/newspack-blocks/compare/v4.14.1...v4.14.2) (2025-07-02)
+
+
+### Bug Fixes
+
+* revert payment gateway check changes from [#2135](https://github.com/Automattic/newspack-blocks/issues/2135) ([#2160](https://github.com/Automattic/newspack-blocks/issues/2160)) ([0bb9977](https://github.com/Automattic/newspack-blocks/commit/0bb9977a3b1328013b16f59f030faacb64fed9c8))
+
+## [4.14.1](https://github.com/Automattic/newspack-blocks/compare/v4.14.0...v4.14.1) (2025-07-02)
+
+
+### Bug Fixes
+
+* update supported gateway check to improve accuracy ([#2135](https://github.com/Automattic/newspack-blocks/issues/2135)) ([bca370e](https://github.com/Automattic/newspack-blocks/commit/bca370e64ecf0003e4e83213e393a9389518fef4))
+
 # [4.14.0](https://github.com/Automattic/newspack-blocks/compare/v4.13.1...v4.14.0) (2025-06-30)
 
 
