@@ -1,3 +1,30 @@
+# [4.15.0](https://github.com/Automattic/newspack-blocks/compare/v4.14.8...v4.15.0) (2025-08-25)
+
+
+### Bug Fixes
+
+* skip acct creation on verification request ([#2182](https://github.com/Automattic/newspack-blocks/issues/2182)) [trigger release] ([caec396](https://github.com/Automattic/newspack-blocks/commit/caec3965df53a97b603e289ec0e32eb2b0d46655))
+
+
+### Features
+
+* add hooks around the content loop's content ([#2187](https://github.com/Automattic/newspack-blocks/issues/2187)) ([a2c4c37](https://github.com/Automattic/newspack-blocks/commit/a2c4c37f69b8b02afe9c9a78c98a388b14c97fc3))
+
+## [4.14.8](https://github.com/Automattic/newspack-blocks/compare/v4.14.7...v4.14.8) (2025-08-12)
+
+
+### Bug Fixes
+
+* **modal-checkout:** account for signup fee in price summary ([#2183](https://github.com/Automattic/newspack-blocks/issues/2183)) ([9ba0a6a](https://github.com/Automattic/newspack-blocks/commit/9ba0a6a84fd727e42bec3db2813b2530cab0dbfa))
+
+## [4.14.7](https://github.com/Automattic/newspack-blocks/compare/v4.14.6...v4.14.7) (2025-08-12)
+
+
+### Bug Fixes
+
+* **author-block:** classname application ([#2172](https://github.com/Automattic/newspack-blocks/issues/2172)) ([b689c66](https://github.com/Automattic/newspack-blocks/commit/b689c667d219199e5ae3a4d5a849eb7fb4334b07))
+* skip acct creation on verification request ([#2182](https://github.com/Automattic/newspack-blocks/issues/2182)) ([8aaef1d](https://github.com/Automattic/newspack-blocks/commit/8aaef1db423c8b1d9cbcc3f3f1a53220b0d82743))
+
 ## [4.14.6](https://github.com/Automattic/newspack-blocks/compare/v4.14.5...v4.14.6) (2025-07-28)
 
 
