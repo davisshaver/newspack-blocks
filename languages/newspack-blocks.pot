@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Newspack Blocks plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Newspack Blocks 4.17.2\n"
+"Project-Id-Version: Newspack Blocks 4.17.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-04T20:50:19+00:00\n"
+"POT-Creation-Date: 2025-11-12T17:45:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: newspack-blocks\n"
@@ -531,21 +531,21 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: src/blocks/homepage-articles/view.php:411
+#: src/blocks/homepage-articles/view.php:398
 #: dist/editor.js:47
 msgid "Load more posts"
 msgstr ""
 
-#: src/blocks/homepage-articles/view.php:418
+#: src/blocks/homepage-articles/view.php:405
 msgid "Something went wrong. Please refresh the page and/or try again."
 msgstr ""
 
-#: src/blocks/homepage-articles/view.php:492
+#: src/blocks/homepage-articles/view.php:479
 msgctxt "post author"
 msgid "by"
 msgstr ""
 
-#: src/blocks/homepage-articles/view.php:509
+#: src/blocks/homepage-articles/view.php:496
 msgctxt "post author"
 msgid " and "
 msgstr ""
@@ -766,7 +766,7 @@ msgstr ""
 
 #: dist/editor.js:1
 #: src/components/query-controls.js:313
-msgid "Begin typing any word in a post title. Click on an autocomplete result to select it."
+msgid "Begin typing any word in a title. Click on an autocomplete result to select it."
 msgstr ""
 
 #: dist/editor.js:1

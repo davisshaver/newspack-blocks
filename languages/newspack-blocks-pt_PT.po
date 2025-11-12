@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Newspack Blocks 1.0.0-alpha.25\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/project\n"
-"POT-Creation-Date: 2025-11-04T20:50:19+00:00\n"
+"POT-Creation-Date: 2025-11-12T17:45:43+00:00\n"
 "PO-Revision-Date: 2024-08-30 08:46-0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -538,20 +538,20 @@ msgstr "Valor da Doação"
 msgid "Other"
 msgstr "Outro"
 
-#: src/blocks/homepage-articles/view.php:411 dist/editor.js:47
+#: src/blocks/homepage-articles/view.php:398 dist/editor.js:47
 msgid "Load more posts"
 msgstr "Carregar mais posts"
 
-#: src/blocks/homepage-articles/view.php:418
+#: src/blocks/homepage-articles/view.php:405
 msgid "Something went wrong. Please refresh the page and/or try again."
 msgstr ""
 
-#: src/blocks/homepage-articles/view.php:492
+#: src/blocks/homepage-articles/view.php:479
 msgctxt "post author"
 msgid "by"
 msgstr "por"
 
-#: src/blocks/homepage-articles/view.php:509
+#: src/blocks/homepage-articles/view.php:496
 msgctxt "post author"
 msgid " and "
 msgstr " e "
@@ -750,8 +750,8 @@ msgstr ""
 
 #: dist/editor.js:1 src/components/query-controls.js:313
 msgid ""
-"Begin typing any word in a post title. Click on an autocomplete result to "
-"select it."
+"Begin typing any word in a title. Click on an autocomplete result to select "
+"it."
 msgstr ""
 
 #: dist/editor.js:1 dist/editor.js:4 src/components/query-controls.js:321
