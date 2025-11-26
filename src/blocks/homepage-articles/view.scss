@@ -299,14 +299,6 @@
 					max-width: 1000% !important;
 					width: 100% !important;
 				}
-
-				&::after {
-					background: rgba(np-colors.$neutral-1000, 0.5);
-					content: "";
-					inset: 0;
-					position: absolute;
-					z-index: 1;
-				}
 			}
 
 			.entry-wrapper {
