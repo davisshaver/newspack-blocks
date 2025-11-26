@@ -1,3 +1,65 @@
+# [4.18.0](https://github.com/Automattic/newspack-blocks/compare/v4.17.6...v4.18.0) (2025-11-24)
+
+
+### Bug Fixes
+
+* linting issues ([#2254](https://github.com/Automattic/newspack-blocks/issues/2254)) ([ae580a3](https://github.com/Automattic/newspack-blocks/commit/ae580a3a5eb864c20e99c0fc692d19c2c3fec55f))
+
+
+### Features
+
+* **content-loop:** setting labels more generic ([#2246](https://github.com/Automattic/newspack-blocks/issues/2246)) ([9a635e9](https://github.com/Automattic/newspack-blocks/commit/9a635e9ffd86fd558365df1fec08d7943e08941c))
+* **donate-block:** default frequency for tiered layout ([#2248](https://github.com/Automattic/newspack-blocks/issues/2248)) ([2d07c11](https://github.com/Automattic/newspack-blocks/commit/2d07c111cd678138ad09cec2b768fc7c98e1d35b))
+* **modal-checkout:** processing payment screen ([#2247](https://github.com/Automattic/newspack-blocks/issues/2247)) ([8beea1e](https://github.com/Automattic/newspack-blocks/commit/8beea1e4fc67b150fc06b5a3b46c827a7d908f1c))
+
+
+### Reverts
+
+* Revert "fix: render modal checkout with filtered supported gateways ([#2240](https://github.com/Automattic/newspack-blocks/issues/2240))" ([#2243](https://github.com/Automattic/newspack-blocks/issues/2243)) ([200412b](https://github.com/Automattic/newspack-blocks/commit/200412bf969fc825090ffbe9b567886827e8eac4))
+
+## [4.17.6](https://github.com/Automattic/newspack-blocks/compare/v4.17.5...v4.17.6) (2025-11-19)
+
+
+### Bug Fixes
+
+* don’t show trial info in modal checkout if not applicable ([#2245](https://github.com/Automattic/newspack-blocks/issues/2245)) ([26de0b9](https://github.com/Automattic/newspack-blocks/commit/26de0b9cf223dd3e5c5d4ee56ba6a8a915554baf))
+
+## [4.17.5](https://github.com/Automattic/newspack-blocks/compare/v4.17.4...v4.17.5) (2025-11-18)
+
+
+### Bug Fixes
+
+* **modal-checkout:** check product type to get recurrence data ([#2259](https://github.com/Automattic/newspack-blocks/issues/2259)) ([0c2ed81](https://github.com/Automattic/newspack-blocks/commit/0c2ed81a0ec2f68ae1aff3eb98633ed52def3218))
+
+## [4.17.4](https://github.com/Automattic/newspack-blocks/compare/v4.17.3...v4.17.4) (2025-11-13)
+
+
+### Bug Fixes
+
+* content gate metadata methods and params ([163e07f](https://github.com/Automattic/newspack-blocks/commit/163e07f56653b39eee68145659419d917606693d))
+* content gate metadata methods and params ([#2249](https://github.com/Automattic/newspack-blocks/issues/2249)) ([fe6cc18](https://github.com/Automattic/newspack-blocks/commit/fe6cc18898349d978af8f0dd9d62b65ed92df652))
+
+## [4.17.3](https://github.com/Automattic/newspack-blocks/compare/v4.17.2...v4.17.3) (2025-11-11)
+
+
+### Bug Fixes
+
+* content loop load more for custom taxs ([#2244](https://github.com/Automattic/newspack-blocks/issues/2244)) ([a2c5040](https://github.com/Automattic/newspack-blocks/commit/a2c5040cc27fc4a0adb6826505eda736edee5552))
+
+## [4.17.2](https://github.com/Automattic/newspack-blocks/compare/v4.17.1...v4.17.2) (2025-11-03)
+
+
+### Bug Fixes
+
+* handle multiple responsive iframe blocks ([#2242](https://github.com/Automattic/newspack-blocks/issues/2242)) ([dc218ea](https://github.com/Automattic/newspack-blocks/commit/dc218ea08ecc5f134b5a1dd4e7d4d6a25a8d71e5))
+
+## [4.17.1](https://github.com/Automattic/newspack-blocks/compare/v4.17.0...v4.17.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* render modal checkout with filtered supported gateways ([#2240](https://github.com/Automattic/newspack-blocks/issues/2240)) ([ba74667](https://github.com/Automattic/newspack-blocks/commit/ba74667f28f674eb028dd1dc613e6b3c90206efa))
+
 # [4.17.0](https://github.com/Automattic/newspack-blocks/compare/v4.16.1...v4.17.0) (2025-10-30)
 
 

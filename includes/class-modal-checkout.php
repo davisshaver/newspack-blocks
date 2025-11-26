@@ -971,6 +971,21 @@ final class Modal_Checkout {
 					'signin_modal_title'   => self::get_modal_checkout_labels( 'signin_modal_title' ),
 					'thankyou_modal_title' => self::get_modal_checkout_labels( 'checkout_success' ),
 				],
+
+				'processing_payment_messages'     => [
+					[
+						'text'  => __( 'Processing payment...', 'newspack-blocks' ),
+						'delay' => 0,
+					],
+					[
+						'text'  => __( 'Verifying details...', 'newspack-blocks' ),
+						'delay' => 8000,
+					],
+					[
+						'text'  => __( 'Finalizing transaction...', 'newspack-blocks' ),
+						'delay' => 14000,
+					],
+				],
 			]
 		);
 		wp_enqueue_style(
@@ -1465,7 +1480,16 @@ final class Modal_Checkout {
 	 */
 	public static function pass_url_param_on_redirect( $location ) {
 		if ( self::is_modal_checkout() ) {
-			$location = \add_query_arg( [ 'modal_checkout' => 1 ], $location );
+			$params = [ 'modal_checkout' => 1 ];
+			$newspack_popup_id = filter_input( INPUT_GET, 'newspack_popup_id', FILTER_SANITIZE_NUMBER_INT );
+			$gate_post_id      = filter_input( INPUT_GET, 'gate_post_id', FILTER_SANITIZE_NUMBER_INT );
+			if ( $newspack_popup_id ) {
+				$params['newspack_popup_id'] = $newspack_popup_id;
+			}
+			if ( $gate_post_id ) {
+				$params['gate_post_id'] = $gate_post_id;
+			}
+			$location = \add_query_arg( $params, $location );
 		}
 		return $location;
 	}
@@ -1806,7 +1830,7 @@ final class Modal_Checkout {
 	 *
 	 * @return false|int User ID if found by email address, false otherwise.
 	 */
-	private static function get_user_id_from_email() {
+	public static function get_user_id_from_email() {
 		$billing_email = filter_input( INPUT_POST, 'billing_email', FILTER_SANITIZE_EMAIL );
 		if ( $billing_email ) {
 			$customer = \get_user_by( 'email', $billing_email );
