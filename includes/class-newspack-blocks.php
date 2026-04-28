@@ -801,7 +801,7 @@ class Newspack_Blocks {
 	public static function prepare_authors() {
 		$authors = [];
 
-		if ( function_exists( 'coauthors_posts_links' ) && ! empty( get_coauthors() ) && 'post' === get_post_type() ) {
+		if ( function_exists( 'coauthors_posts_links' ) && ! empty( get_coauthors() ) ) {
 			$authors = get_coauthors();
 			foreach ( $authors as $author ) {
 				$author->avatar = coauthors_get_avatar( $author, 48 );
